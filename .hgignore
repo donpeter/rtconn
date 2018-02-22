@@ -1,0 +1,6 @@
+syntax: glob
+
+*/node_moduales/
+public/components
+.nyc_output
+.sass-cache
