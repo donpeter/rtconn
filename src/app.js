@@ -5,8 +5,9 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
-const config = require('./config/config');
 const mongoose = require('mongoose');
+const compress = require('compression');
+const config = require('./config/config');
 
 const routes = require('./routes/index');
 const users = require('./routes/user');
@@ -39,6 +40,7 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 app.use(cookieParser());
+app.use(compress());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
