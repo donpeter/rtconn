@@ -1,0 +1,5 @@
+apps:
+  - script   : 'bin/www'
+    name     : 'rtconn'
+    exec_mode: 'cluster'
+    instances: 1

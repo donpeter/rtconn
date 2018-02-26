@@ -11,5 +11,8 @@ ENV NODE_MODULE_CACHE="./npm-packages-offline-cache"
 COPY src /application
 WORKDIR /application
 
+#Create a volume for caching
+VOLUME /application
+
 ENTRYPOINT ["build.sh"]
 CMD ["yarn", "test"]

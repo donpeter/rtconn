@@ -4,7 +4,9 @@ const router = express.Router();
 
 /* GET home page. */
 router.get('/', (req, res) => {
-  res.render('index', {title: 'Express'});
+
+  const data = {title: 'RTConn', description: 'A real time system'};
+  res.render('index', data);
 });
 
 router.get('/test', (req, res) => {

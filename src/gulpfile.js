@@ -42,6 +42,7 @@ gulp.task('lint', function() {
 
 gulp.task('default', [
   'sass',
+  'lint',
   'develop',
   'watch',
 ]);
