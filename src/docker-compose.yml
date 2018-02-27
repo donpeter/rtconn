@@ -1,0 +1,36 @@
+version: "3.2"
+services:
+  web:
+    build:
+      context: ../
+      dockerfile: docker/dev/Dockerfile
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/application
+    networks:
+      - rtconn
+    depends_on:
+      - mongo
+      - redis
+    command: ["yarn", "test"]
+
+  mongo:
+    image: mongo:latest
+    networks:
+      - rtconn
+  redis:
+    image: redis:latest
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - rtconn
+
+networks:
+  rtconn:
+
