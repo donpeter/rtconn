@@ -6,6 +6,7 @@ services:
       dockerfile: docker/dev/Dockerfile
     environment:
       - PORT=3000
+      - NODE_ENV=development
     expose:
       - 3000
     ports:
@@ -16,10 +17,16 @@ services:
       - rtconn
     depends_on:
       - mongo
-    command: ["yarn", "start"]
+      - redis
 
   mongo:
     image: mongo:latest
+    networks:
+      - rtconn
+  redis:
+    image: redis:latest
+    volumes:
+      - ../../src/data/redis:/data
     networks:
       - rtconn
 

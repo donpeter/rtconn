@@ -10,6 +10,7 @@ const config = {
     },
     port: process.env.PORT || 3000,
     db: 'mongodb://mongo/rtconn-development',
+    redis: {host: 'redis'},
   },
 
   test: {
@@ -18,7 +19,8 @@ const config = {
       name: 'rtconn',
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost/rtconn-test',
+    db: 'mongodb://mongo/rtconn-test',
+    redis: {host: 'redis'},
   },
 
   production: {
@@ -27,7 +29,9 @@ const config = {
       name: 'rtconn',
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost/rtconn-production',
+    db: 'mongodb://mongo/rtconn-production',
+    redis: {host: 'redis'},
+
   },
 };
 

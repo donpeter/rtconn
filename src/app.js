@@ -5,9 +5,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
-const mongoose = require('mongoose');
 const compress = require('compression');
-const config = require('./config/config');
 
 const routes = require('./routes/index');
 const users = require('./routes/user');
@@ -18,11 +16,6 @@ const env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
 app.locals.ENV_DEVELOPMENT = env === 'development';
 
-mongoose.connect(config.db);
-const db = mongoose.connection;
-db.on('error', () => {
-  throw new Error('unable to connect to database at ' + config.db);
-});
 
 // view engine setup
 
