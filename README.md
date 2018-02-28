@@ -32,7 +32,7 @@ docker-compose version 1.19.0, build 9e633ef
 ```
 **Start up RTConn using docker-compose**
 ```sh
-$ cd docker/dev/
+$ cd src/
 $ docke-compose up
 ```
 This will create the **RTConn** image and pull in the necessary dependencies. 
