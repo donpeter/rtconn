@@ -12,8 +12,8 @@ RTConn requires the following technologies to run.
 - [MongoDB](https://www.mongodb.com/) v3.4+
 - [Redis](https://redis.io/) v4.0.8+
 - [Docker](https://www.docker.com/) v17+
-
-> NOTE: You don't have to install any of the stated requirement on your system (excluding **Docker**). Because all dependencies has been containerlized using docker.
+- [Docker-Compose](https://docs.docker.com/compose/install/) v1.19.0+
+> NOTE: You don't have to install any of the stated requirement on your system (excluding **Docker and Docker-Compose**). Because all dependencies has been containerlized using docker.
 
 
 ### Docker
@@ -32,8 +32,7 @@ docker-compose version 1.19.0, build 9e633ef
 ```
 **Start up RTConn using docker-compose**
 ```sh
-$ cd src/
-$ docke-compose up
+$ make dev
 ```
 This will create the **RTConn** image and pull in the necessary dependencies. 
 
