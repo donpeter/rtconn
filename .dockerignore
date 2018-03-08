@@ -2,3 +2,4 @@
 src/node_modules
 src/coverage
 src/.nyc_output
+src/npm-packages-offline-cache

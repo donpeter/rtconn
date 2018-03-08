@@ -1,18 +1,16 @@
 #This image is built on runtime and is used for test
-FROM patunalu/node-centos7
+FROM patunalu/node-alpine
+
+#Set enviroment to production
+ENV NODE_ENV=test
 
 #Copy build.sh  to /usr/local/bin and make it executable
-COPY docker/dev/build.sh /usr/local/bin/build.sh
+COPY docker/test/build.sh /usr/local/bin/build.sh
 RUN chmod +x /usr/local/bin/build.sh
 
-ENV NODE_MODULE_CACHE="./npm-packages-offline-cache"
-
 #Copy the src to application and make it the workig director
-COPY src /application
 WORKDIR /application
-
-#Create a volume for caching
-VOLUME /application
-
+COPY src /application
+USER node
 ENTRYPOINT ["build.sh"]
-CMD ["yarn", "test"]
+CMD ["npm", "test"]
