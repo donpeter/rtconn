@@ -1,0 +1,34 @@
+version: "3.2"
+services:
+  test:
+    build:
+      context: ../../
+      dockerfile: docker/release/Dockerfile
+    environment:
+      - PORT=3000
+    expose:
+      - 3000
+    ports:
+      - 8081:3000
+    networks:
+      - rtconn
+    volumes:
+      - ../../src:/application
+    depends_on:
+      - mongo
+      - redis
+
+  mongo:
+    image: mongo:latest
+    networks:
+      - rtconn
+  redis:
+    image: redis:latest
+    volumes:
+      - ../../src/data/redis:/data
+    networks:
+      - rtconn
+
+networks:
+  rtconn:
+
