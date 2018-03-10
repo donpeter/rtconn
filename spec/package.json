@@ -1,0 +1,15 @@
+{
+  "name": "rtconn-spec",
+  "version": "1.0.0",
+  "description": "RTConn acceptance test",
+  "main": "index.js",
+  "author": "Don Peter C. Atunalu",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.0.4",
+    "sinon": "^4.4.2",
+    "superagent": "^3.8.2"
+  }
+}

@@ -11,6 +11,6 @@ RUN chmod +x /usr/local/bin/build.sh
 #Copy the src to application and make it the workig director
 WORKDIR /application
 COPY src /application
-USER node
+#USER node
 ENTRYPOINT ["build.sh"]
 CMD ["npm", "test"]

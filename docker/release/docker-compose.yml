@@ -1,22 +1,33 @@
 version: "3.2"
 services:
-  test:
-    build:
-      context: ../../
-      dockerfile: docker/release/Dockerfile
+  node:
+    image: patunalu/rtconn
     environment:
-      - PORT=3000
-    expose:
-      - 3000
-    ports:
-      - 8081:3000
+      - PORT=8080
     networks:
       - rtconn
-    volumes:
-      - ../../src:/application
+
     depends_on:
       - mongo
       - redis
+  nginx:
+    image: patunalu/rtconn-nginx:latest
+    networks:
+      - rtconn
+    ports:
+      - 8080:80
+    depends_on:
+      - node
+
+  test:
+    image: patunalu/rtconn-spec
+    environment:
+      - PORT=80
+      - URL=http://nginx
+    networks:
+      - rtconn
+    depends_on:
+      - nginx
 
   mongo:
     image: mongo:latest
@@ -28,6 +39,7 @@ services:
       - ../../src/data/redis:/data
     networks:
       - rtconn
+
 
 networks:
   rtconn:
