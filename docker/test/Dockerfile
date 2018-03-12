@@ -1,6 +1,7 @@
 #This image is built on runtime and is used for test
 FROM patunalu/node-alpine
-
+LABEL maintainer="Don Peter C. Atunalu <peter@donpeter.me>" \
+      application="RTConn"
 #Set enviroment to production
 ENV NODE_ENV=test
 
