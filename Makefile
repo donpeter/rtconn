@@ -19,6 +19,7 @@ APP_SERVICE_NAME := app
 INSPECT := $$(docker-compose -p $$1 -f $$2 ps -q $$3 | xargs -I ARGS docker inspect -f "{{ .State.ExitCode }}" ARGS)
 #Docker registry used in tagging images - default to docker.io
 DOCKER_REGISTRY ?= docker.io
+DOCKER_REGISTRY_AUTH ?=
 #Tag expression - can be used to evaluate sell expression a runtime
 BUILD_TAG_EXPRESSION ?= date -u +%Y%m%d%H%M%S
 #Shell Exprssion
@@ -28,7 +29,7 @@ BUILD_TAG ?= $(BUILD_EXPRESSION)
 CHECK := @bash -c '\
 	if [[ $(INSPECT) -ne 0 ]]; \
 	then exit $(INSPECT); fi' VALUE
-.PHONY: dev test release build clean push tag buildtag
+.PHONY: dev test release build clean push tag buildtag login logout publish
 
 dev:
 	${INFO} "Building images..."
@@ -84,9 +85,22 @@ tag:
 	@ ${SUCCESS} "Tag complete"
 buildtag:
 	@ ${INFO} "Tagging release image"
-	$(foreach tags, $(BUILDTAG_ARGS), docker tag $(IMAGE_ID) $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tags).$(BUILD_TAG);)
+	@ $(foreach tags, $(BUILDTAG_ARGS), docker tag $(IMAGE_ID) $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tags).$(BUILD_TAG);)
 	@ ${SUCCESS} "Tag complete"
- #Helper
+login:
+	${INFO} "Loging In..."
+	@ docker login -u $$DOCKER_USER -p $$DOCKER_PASSWORD  $(DOCKER_REGISTRY_AUTH)
+	${SUCCESS} "Logged in succefully to $$DOCKER_REGISTRY"
+logout:
+	${INFO} "Loging Out..."
+	@ docker logout
+	${SUCCESS} "Logged out succefully from $$DOCKER_REGISTRY"
+publish:
+	${INFO} "Publishing release image $(IMAGE_ID) to $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)..."
+	@ $(foreach tags, $(shell echo $(REPO_EXPR)), docker push $(tags);)
+	${SUCCESS} 	"Publish complete"
+
+#Helper
 YELLOW :="\e[1;93m"
 CHK :=\xE2\x9c\x94
 GREEN :="\e[1;92m"
@@ -110,6 +124,14 @@ ERROR := bash -c '\
 APP_CONTAINER_ID := $$(docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) ps -q $(APP_SERVICE_NAME))
 #Get Image id of app image
 IMAGE_ID :=	$$(docker inspect -f '{{ .Image }}' $(APP_CONTAINER_ID))
+#Repo filter
+ifeq ($(DOCKER_REGISTRY), docker.io)
+  REPO_FILTER := $(ORG_NAME)/$(REPO_NAME)[^[:space:]|\$$]*
+else
+  REPO_FILTER := $(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME)[^[:space:]|\$$]*
+endif
+#Get Repo tags
+REPO_EXPR := $$(docker inspect -f '{{range .RepoTags}}{{.}} {{end}}' $(IMAGE_ID) | grep -oh "$(REPO_FILTER)" | xargs)
 
 #Extract tag arguments
 ifeq (tag,$(firstword $(MAKECMDGOALS)))
@@ -117,7 +139,7 @@ ifeq (tag,$(firstword $(MAKECMDGOALS)))
   ifeq ($(TAG_ARGS),)
     $(error you must specify a tag)
   endif
- $(eval $(TAG_ARGS):;@:)
+  $(eval $(TAG_ARGS):;@:)
 endif
 
 #Extract buildtags arguments
