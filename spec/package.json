@@ -6,9 +6,13 @@
   "author": "Don Peter C. Atunalu",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "test": "mocha --colors --reporter mocha-jenkins-reporter --recursive test --exit"
+  },
   "devDependencies": {
     "chai": "^4.1.2",
     "mocha": "^5.0.4",
+    "mocha-jenkins-reporter": "^0.3.10",
     "sinon": "^4.4.2",
     "superagent": "^3.8.2"
   }

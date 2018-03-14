@@ -1,11 +1,8 @@
-const request = require('supertest-as-promised'),
-  chai = require('chai'),
-  chaiAsPromised = require('chai-as-promised');
+const request = require('supertest');
+const chai = require('chai');
 
-const app = require('../../app');
-chai.use(chaiAsPromised);
 const expect = chai.expect;
-
+const app = require('../../app');
 
 before(function() {
 });

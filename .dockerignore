@@ -4,3 +4,4 @@ src/coverage/
 src/.nyc_output/
 spec/
 src/data/
+src/reports/*.xml

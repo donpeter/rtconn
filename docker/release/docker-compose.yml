@@ -1,12 +1,11 @@
 version: "3.2"
 services:
-  node:
+  app:
     image: patunalu/rtconn
     environment:
       - PORT=8080
     networks:
       - rtconn
-
     depends_on:
       - mongo
       - redis
@@ -17,11 +16,12 @@ services:
     ports:
       - 8080:80
     depends_on:
-      - node
+      - app
 
   test:
     image: patunalu/rtconn-spec
     environment:
+      - JUNIT_REPORT_PATH=/reports/acceptance.xml
       - PORT=80
       - URL=http://nginx
     networks:
@@ -35,8 +35,6 @@ services:
       - rtconn
   redis:
     image: redis:latest
-    volumes:
-      - ../../src/data/redis:/data
     networks:
       - rtconn
 
