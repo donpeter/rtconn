@@ -76,7 +76,7 @@ clean:
 	${INFO} "Cleaning development enviroment..."
 	@docker-compose -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) down -v --rmi local
 	@docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) down -v --rmi local
-	@docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) down -v --rmi local
+#	@docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) down -v --rmi local
 	@docker images -q -f dangling=true -f label=application=$(PROJECT_NAME) | xargs -I ARGS docker rmi -f ARGS
 	${SUCCESS} "Enviroment cleaned"
 tag:
