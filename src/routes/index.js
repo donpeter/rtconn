@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   redisClient.incr('views');
   redisClient.getAsync('views')
     .then((views) => {
-      const data = {title: 'RTConn', description: 'A Real time system', views};
+      const data = {title: 'RTConn', description: 'A Real-Time System', views};
       res.render('index', data);
     });
 });

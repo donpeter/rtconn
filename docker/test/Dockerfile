@@ -10,8 +10,8 @@ COPY docker/test/build.sh /usr/local/bin/build.sh
 RUN chmod +x /usr/local/bin/build.sh
 
 #Copy the src to application and make it the workig director
-WORKDIR /application
-COPY src /application
+WORKDIR /app
+COPY src /app
 #USER node
 ENTRYPOINT ["build.sh"]
 CMD ["npm", "test"]

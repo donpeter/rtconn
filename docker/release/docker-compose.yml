@@ -1,7 +1,9 @@
 version: "3.2"
 services:
   app:
-    image: patunalu/rtconn
+    build:
+      context: ../../
+      dockerfile: docker/release/Dockerfile
     environment:
       - PORT=8080
     networks:

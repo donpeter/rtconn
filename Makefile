@@ -54,19 +54,19 @@ release:
 	${INFO} "Running acceptance test..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up test
 	@ docker cp $$(docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) ps -q test):/reports/. spec/reports
-	${CHECK} $(TEST_PROJECT) $(TEST_COMPOSE_FILE) test
+	${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) test
 	${SUCCESS} "Acceptance test complete"
 build:
-	${INFO} "Building  $(ORG_NAME)/$(REPO_NAME)..."
-	@ docker build -f $(REL_DOCKER_FILE) -t $(ORG_NAME)/$(REPO_NAME) .
+#	${INFO} "Building  $(ORG_NAME)/$(REPO_NAME)..."
+#	@ docker build -f $(REL_DOCKER_FILE) -t $(ORG_NAME)/$(REPO_NAME) .
 	${INFO} "Building  $(ORG_NAME)/$(REPO_NAME)-spec..."
 	@ docker build -f $(SPEC_DOCKER_FILE) -t $(ORG_NAME)/$(REPO_NAME)-spec spec/
 	${INFO} "Building  $(ORG_NAME)/$(REPO_NAME)-nginx..."
 	@ docker build -f $(NGINX_DOCKER_FILE) -t $(ORG_NAME)/$(REPO_NAME)-nginx docker/release/nginx
 	${SUCCESS} "Build complete"
 push:
-	${INFO} "Pushing  $(ORG_NAME)/$(REPO_NAME)..."
-	@ docker push $(ORG_NAME)/$(REPO_NAME)
+#	${INFO} "Pushing  $(ORG_NAME)/$(REPO_NAME)..."
+#	@ docker push $(ORG_NAME)/$(REPO_NAME)
 	${INFO} "Pushing  $(ORG_NAME)/$(REPO_NAME)-spec..."
 	@ docker push $(ORG_NAME)/$(REPO_NAME)-spec
 	${INFO} "Pushing  $(ORG_NAME)/$(REPO_NAME)-nginx..."
