@@ -43,6 +43,7 @@ test:
 	@ docker-compose -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) build --pull test
 	${INFO} "Running  test..."
 	@ docker-compose -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) up test
+	@ docker cp $$(docker-compose -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) ps -q test):/app/npm-packages-offline-cache src/npm-packages-offline-cache
 	@ docker cp $$(docker-compose -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) ps -q test):/reports/. src/reports
 	${CHECK} $(TEST_PROJECT) $(TEST_COMPOSE_FILE) test
 	${SUCCESS} "Test complete"
