@@ -52,6 +52,8 @@ release:
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) pull test nginx
 	${INFO} "Building images..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build
+	${INFO} "Running  Agent..."
+	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up agent
 	${INFO} "Running acceptance test..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up test
 	@ docker cp $$(docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) ps -q test):/reports/. spec/reports

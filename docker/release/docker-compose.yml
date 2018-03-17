@@ -16,9 +16,24 @@ services:
     networks:
       - rtconn
     ports:
-      - 8080:80
+      - 8081:80
     depends_on:
       - app
+  agent:
+    image: patunalu/ansible:alpine
+    environment:
+      PROBE_HOST: "mongo"
+      PROBE_PORT: "27017"
+      PROBE_DELAY: 0
+      PORBE_TIMEOUT: 120
+    volumes:
+      - ./ansible/probe.yml:/ansible/site.yml
+    networks:
+      - rtconn
+    depends_on:
+      - mongo
+      - redis
+
 
   test:
     image: patunalu/rtconn-spec

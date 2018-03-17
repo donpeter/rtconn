@@ -8,15 +8,15 @@ const url = process.env.URL + `:${port}` || `http://localhost:${port}`;
 before(function() {
 
 });
-describe('Index Route', function() {
-  context('GET /', function() {
+describe('Acceptance Test', function() {
+  context('Index Page', function() {
     it('Should return a 200 status', function() {
       return request
         .get(url)
         .then(res => expect(res.status).to.equal(200));
     });
   });
-  context.skip('GET /test', function() {
+  context.skip('Test Page {route = /test}', function() {
     it('Should return a 200 and include { foo: "foo"} ', function() {
       return request(app)
         .get('/test')

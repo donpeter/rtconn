@@ -1,30 +1,31 @@
-pipeline {
-    agent any
-
-    stages {
-        stage('Unit/Integration Test') {
-            steps {
-                checkout scm
+node {
+    checkout scm
+    try {
+        ansiColor('xterm') {
+            stage('Unit/Integration Test'){
                 sh 'make test'
             }
-        }
-        stage('Acceptance Test') {
-            steps {
-                sh 'make release..'
+            stage('Acceptance Test'){
+                sh 'make release'
             }
-        }
-        stage('Tag and Publish Image') {
-            steps {
+            stage ('Tag and Publish Image'){
                 sh 'make latest \$(git rev-parse --short HEAD)'
-            }
-        }
-    }
+                withEnv("[DOCKER_USER=${DOCKER_USER}]",
+                "DOCKER_PASSWORD=${DOCKER_PASSWORD}"){
+                    sh "make login"
+                }
+                sh 'make publish'
 
-    post {
-        always{
-            stage('Clean up'){
-                sh 'make clean'
             }
         }
+
+    }
+    finally {
+        stage 'Clean up'
+        ansiColor('xterm') {
+            sh 'make clean'
+        }
+        stage 'Collect Test Report'
+        step([$class: 'JUnitResultArchiver', testResults: '**/reports/*.xml'])
     }
 }
