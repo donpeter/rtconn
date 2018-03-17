@@ -9,7 +9,7 @@ node {
                 sh 'make release'
             }
             stage ('Tag and Publish Image'){
-                sh 'make latest \$(git rev-parse --short HEAD)'
+                sh 'make tag latest \$(git rev-parse --short HEAD)'
                 withEnv("[DOCKER_USER=${DOCKER_USER}]",
                 "DOCKER_PASSWORD=${DOCKER_PASSWORD}"){
                     sh "make login"

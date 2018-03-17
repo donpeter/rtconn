@@ -24,7 +24,7 @@ services:
     environment:
       PROBE_HOST: "mongo"
       PROBE_PORT: "27017"
-      PROBE_DELAY: 0
+      PROBE_DELAY: 3
       PORBE_TIMEOUT: 120
     volumes:
       - ./ansible/probe.yml:/ansible/site.yml
