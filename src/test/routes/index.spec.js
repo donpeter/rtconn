@@ -14,7 +14,7 @@ beforeEach('some description', function() {
 
 
 describe('Index Route', function() {
-  context('GET /', function() {
+  context('Index GET /', function() {
     it('Should return a 200 status', function() {
       return request(app).get('/').expect(200);
     });
