@@ -20,7 +20,7 @@ describe('Acceptance Test', function() {
     it('Should return a 200 and include { foo: "foo"} ', function() {
       return request(app)
         .get('/test')
-        .expect(200)
+        .expect(2000)
         .then((res) => {
           return expect(res.body).to.deep.include({foo: 'foo'});
         });
