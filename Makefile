@@ -37,10 +37,12 @@ dev:
 	${INFO} "Starting up NodeJs..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) up node
 test:
+	${INFO} "Creating Volume..."
+	@ docker volume create rtconntest
 	${INFO} "Pulling latest images..."
 	@ docker-compose -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) pull
 	${INFO} "Building images..."
-	@ docker-compose -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) build --pull test
+	@ docker-compose -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) build test
 	${INFO} "Running  test..."
 	@ docker-compose -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) up test
 	@ docker cp $$(docker-compose -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) ps -q test):/app/npm-packages-offline-cache src/npm-packages-offline-cache
@@ -48,6 +50,8 @@ test:
 	${CHECK} $(TEST_PROJECT) $(TEST_COMPOSE_FILE) test
 	${SUCCESS} "Test complete"
 release:
+	${INFO} "Creating Volume..."
+	@ docker volume create rtconn
 	${INFO} "Pulling latest images..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) pull test nginx
 	${INFO} "Building images..."

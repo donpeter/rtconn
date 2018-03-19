@@ -7,11 +7,11 @@ services:
     environment:
       - JUNIT_REPORT_PATH=/reports/unitandintegration.xml
       - PORT=3000
-      - NODE_ENV=development
+      - NODE_ENV=test
     expose:
       - 3000
     volumes:
-      - ../../src:/application
+    - rtconntest:/app
     networks:
       - rtconn
     depends_on:
@@ -30,7 +30,7 @@ services:
       ports:
         - 3000:3000
       volumes:
-        - ../../src:/application
+      - ../../src:/app
       networks:
         - rtconn
       depends_on:
@@ -48,7 +48,9 @@ services:
     networks:
       - rtconn
 
-
+volumes:
+  rtconntest:
+    external: true
 networks:
   rtconn:
 

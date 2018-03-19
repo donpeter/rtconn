@@ -8,6 +8,8 @@ services:
       - PORT=8080
     networks:
       - rtconn
+    volumes:
+      - rtconn:/app
     depends_on:
       - mongo
       - redis
@@ -55,7 +57,9 @@ services:
     networks:
       - rtconn
 
-
+volumes:
+  rtconn:
+    external: true
 networks:
   rtconn:
 
