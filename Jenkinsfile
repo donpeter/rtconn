@@ -23,6 +23,7 @@ node {
         stage('Clean up'){
             ansiColor('xterm') {
                 sh 'make clean'
+                sh 'make logout'
             }
         }
 
