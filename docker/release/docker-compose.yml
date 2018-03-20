@@ -22,14 +22,13 @@ services:
     depends_on:
       - app
   agent:
-    image: patunalu/ansible:alpine
+    build:
+      context: ansible
     environment:
       PROBE_HOST: "mongo"
       PROBE_PORT: "27017"
       PROBE_DELAY: 3
       PORBE_TIMEOUT: 120
-    volumes:
-      - ./ansible/probe.yml:/ansible/site.yml
     networks:
       - rtconn
     depends_on:

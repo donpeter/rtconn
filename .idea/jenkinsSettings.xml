@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Jenkins.Application.Settings">
-    <option name="serverUrl" value="http://localhost:8080" />
+    <option name="serverUrl" value="http://52.200.64.17:8080" />
   </component>
 </project>
