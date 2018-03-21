@@ -9,6 +9,7 @@ const compress = require('compression');
 
 const routes = require('./routes/index');
 const users = require('./routes/user');
+const chat = require('./routes/chat');
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/chat', chat);
 
 // /catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -11,6 +11,7 @@ router.get('/', (req, res) => {
       const data = {title: 'RTConn', description: 'A Real-Time System', views};
       res.render('index', data);
     });
+
 });
 
 router.get('/test', (req, res) => {

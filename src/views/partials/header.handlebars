@@ -1,0 +1,33 @@
+<header class="container-fluid">
+  <div class="container">
+    {{> menu }}
+    <div class="row header_action">
+      <div class="col-md-6  d-none d-md-block">
+        <h1>Is your team remote <br> or distributed?</h1>
+        <p>Stay productive with effortless video collaboration!</p>
+      </div>
+      <div class="col-md-6 call_box">
+        <form action="chat" class="row" method="POST">
+          <h2>Create a room and start talking now</h2>
+          <div class="col-sm-9">
+            <div class=" prefix-form">
+              <span id="call_prefix"> RTConn.io/</span>
+              <input class="form-control" type="text" name="roomName" placeholder="Room name">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <input type="submit" class="btn btn-primary float-right" value="Start a Chat!">
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <p id="typer"></p>
+      </div>
+    </div>
+  </div>
+</header>

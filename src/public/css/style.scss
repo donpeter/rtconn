@@ -1,8 +1,76 @@
+@import "variables";
+
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: $gray;
 }
 
-a {
-  color: #00B7FF;
+h1, h2, h3 {
+  color: $primary-color;
+}
+
+header {
+  color: white;
+  min-height: 80vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+  url("../img/bg2.jpeg") no-repeat top center fixed;
+  background-size: cover;
+  .header_action {
+    padding: 10vh 0 0;
+    vertical-align: center;
+    box-sizing: border-box;
+  }
+  .call_box {
+    background-color: rgba($secondary-color, 0.6);
+    box-sizing: border-box;
+    padding: 25px 35px;
+    margin-left: 0;
+
+  }
+  & #typer {
+    font-size: 1.5em;
+    text-align: center;
+    margin: 20px auto;
+  }
+
+}
+
+//header.container-fluid{
+//  padding: 0 5%;
+//
+//}
+nav ul li a.nav-link {
+  color: white !important;
+  font-size: larger;
+  margin: 0 10px;
+  &:hover {
+    color: $primary-color;
+    text-decoration: underline;
+  }
+}
+
+//******************FORMS******************//
+.prefix-form {
+  color: $primary-color;
+  font-size: 1.2em;
+  padding: 2px 10px;
+  background-color: whitesmoke;
+  border: 1px solid $primary-color;
+  border-radius: 8px;
+  height: 40px;
+  -ms-text-align-last: right;
+
+  input {
+    height: 100%;
+    display: inline-block;
+    padding: 0;
+    width: auto;
+    border: none;
+    background-color: whitesmoke;
+
+    &:focus {
+      border-width: 0;
+      box-shadow: none;
+      background-color: whitesmoke;
+    }
+  }
 }
