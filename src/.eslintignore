@@ -1,0 +1,6 @@
+node_modules
+reports
+npm-packages-offline-cache
+coverage
+public/components
+public/js
