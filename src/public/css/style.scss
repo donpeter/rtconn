@@ -1,36 +1,51 @@
+@import "../components/bootstrap/scss/functions";
+@import "mixins";
 @import "variables";
 
+
 body {
-  color: $gray;
+  color: #333;
 }
 
-h1, h2, h3 {
-  color: $primary-color;
+h1, h2, h3, h4, h5, h6 {
+  color: darken($primary-color, .2);
 }
 
 header {
-  color: white;
-  min-height: 80vh;
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
   url("../img/bg2.jpeg") no-repeat top center fixed;
   background-size: cover;
-  .header_action {
+}
+
+.banner-header {
+  color: $white;
+  height: 80vh;
+
+  position: relative;
+
+  .header-action {
     padding: 10vh 0 0;
-    vertical-align: center;
-    box-sizing: border-box;
   }
-  .call_box {
-    background-color: rgba($secondary-color, 0.6);
-    box-sizing: border-box;
+  .call-box {
+    background-color: transparentize(invert($primary-color), 0.4);
     padding: 25px 35px;
     margin-left: 0;
+    margin-bottom: 20px;
+    box-sizing: border-box;
 
   }
-  & #typer {
-    font-size: 1.5em;
+  .bottom {
+    position: absolute;
+    bottom: 0;
     text-align: center;
-    margin: 20px auto;
+    #typer {
+
+      //font-size: 1.5em;
+      text-align: center;
+      margin: 20px auto;
+    }
   }
+
 
 }
 
@@ -39,7 +54,7 @@ header {
 //
 //}
 nav ul li a.nav-link {
-  color: white !important;
+  color: $white !important;
   font-size: larger;
   margin: 0 10px;
   &:hover {
@@ -50,27 +65,31 @@ nav ul li a.nav-link {
 
 //******************FORMS******************//
 .prefix-form {
-  color: $primary-color;
-  font-size: 1.2em;
-  padding: 2px 10px;
+  color: darken($primary-color, .6);
+  font-size: 1rem;
+  padding: 2px 0 2px 10px;
   background-color: whitesmoke;
   border: 1px solid $primary-color;
   border-radius: 8px;
   height: 40px;
-  -ms-text-align-last: right;
-
-  input {
+  //margin: 10px 0;
+  display: flex;
+  align-items: center;
+  .prefix_text {
+    font-weight: bold;
+  }
+  input.form-control {
     height: 100%;
-    display: inline-block;
     padding: 0;
-    width: auto;
+    //min-width: 30%;
+    //max-width: 65%;
     border: none;
-    background-color: whitesmoke;
+    background-color: inherit;
 
     &:focus {
       border-width: 0;
       box-shadow: none;
-      background-color: whitesmoke;
+      background-color: inherit;
     }
   }
 }

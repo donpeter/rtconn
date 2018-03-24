@@ -1,53 +1,59 @@
 body {
-  color: #332E3C; }
+  color: #333; }
 
-h1, h2, h3 {
-  color: #70d6ff; }
+h1, h2, h3, h4, h5, h6 {
+  color: #ff966f; }
 
 header {
-  color: white;
-  min-height: 80vh;
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../img/bg2.jpeg") no-repeat top center fixed;
   background-size: cover; }
-  header .header_action {
-    padding: 10vh 0 0;
-    vertical-align: center;
-    box-sizing: border-box; }
-  header .call_box {
-    background-color: rgba(255, 151, 112, 0.6);
-    box-sizing: border-box;
+
+.banner-header {
+  color: whitesmoke;
+  height: 80vh;
+  position: relative; }
+  .banner-header .header-action {
+    padding: 10vh 0 0; }
+  .banner-header .call-box {
+    background-color: rgba(0, 104, 143, 0.6);
     padding: 25px 35px;
-    margin-left: 0; }
-  header #typer {
-    font-size: 1.5em;
-    text-align: center;
-    margin: 20px auto; }
+    margin-left: 0;
+    margin-bottom: 20px;
+    box-sizing: border-box; }
+  .banner-header .bottom {
+    position: absolute;
+    bottom: 0;
+    text-align: center; }
+    .banner-header .bottom #typer {
+      text-align: center;
+      margin: 20px auto; }
 
 nav ul li a.nav-link {
-  color: white !important;
+  color: whitesmoke !important;
   font-size: larger;
   margin: 0 10px; }
   nav ul li a.nav-link:hover {
-    color: #70d6ff;
+    color: #FF9770;
     text-decoration: underline; }
 
 .prefix-form {
-  color: #70d6ff;
-  font-size: 1.2em;
-  padding: 2px 10px;
+  color: #ff956d;
+  font-size: 1rem;
+  padding: 2px 0 2px 10px;
   background-color: whitesmoke;
-  border: 1px solid #70d6ff;
+  border: 1px solid #FF9770;
   border-radius: 8px;
   height: 40px;
-  -ms-text-align-last: right; }
-  .prefix-form input {
+  display: flex;
+  align-items: center; }
+  .prefix-form .prefix_text {
+    font-weight: bold; }
+  .prefix-form input.form-control {
     height: 100%;
-    display: inline-block;
     padding: 0;
-    width: auto;
     border: none;
-    background-color: whitesmoke; }
-    .prefix-form input:focus {
+    background-color: inherit; }
+    .prefix-form input.form-control:focus {
       border-width: 0;
       box-shadow: none;
-      background-color: whitesmoke; }
+      background-color: inherit; }

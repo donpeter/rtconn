@@ -1,21 +1,23 @@
 <header class="container-fluid">
-  <div class="container">
+  <div class="container banner-header">
     {{> menu }}
-    <div class="row header_action">
+    <div class="row header-action">
       <div class="col-md-6  d-none d-md-block">
         <h1>Is your team remote <br> or distributed?</h1>
         <p>Stay productive with effortless video collaboration!</p>
       </div>
-      <div class="col-md-6 call_box">
+      <div class="col-md-6 call-box">
         <form action="chat" class="row" method="POST">
-          <h2>Create a room and start talking now</h2>
-          <div class="col-sm-9">
+          <div class="col-sm-12 mb-2">
+            <h3>Create a room and start talking now</h3>
+          </div>
+          <div class="col-xl-9 mb-2">
             <div class=" prefix-form">
-              <span id="call_prefix"> RTConn.io/</span>
+              <span class="prefix-text"> RTConn.io/</span>
               <input class="form-control" type="text" name="roomName" placeholder="Room name">
             </div>
           </div>
-          <div class="col-sm-3">
+          <div class="col-xl-3">
             <div class="form-group">
               <input type="submit" class="btn btn-primary float-right" value="Start a Chat!">
             </div>
@@ -24,10 +26,10 @@
         </form>
       </div>
     </div>
-    <div class="row">
-      <div class="col-lg-12">
-        <p id="typer"></p>
-      </div>
+    <div class="bottom d-none d-md-block">
+      <h3 id="typer" class="text-secondary"></h3>
     </div>
   </div>
+
+
 </header>
