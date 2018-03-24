@@ -5,7 +5,7 @@ services:
       context: ../../
       dockerfile: docker/test/Dockerfile
     environment:
-    - JUNIT_REPORT_PATH=/reports/unitandintegration.xml
+      - JUNIT_REPORT_PATH=/reports/unitandintegration.xml
       - PORT=3000
       - NODE_ENV=test
       - MONGO_URL=mongo
