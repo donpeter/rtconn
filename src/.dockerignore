@@ -1,0 +1,7 @@
+reports/
+.nyc-output/
+coverage/
+node_modules/
+public/components
+
+

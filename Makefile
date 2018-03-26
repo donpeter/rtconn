@@ -32,6 +32,8 @@ CHECK := @bash -c '\
 .PHONY: dev test release build clean push tag buildtag login logout publish
 
 dev:
+	${INFO} "Pulling latest images..."
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) pull
 	${INFO} "Building images..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build
 	${INFO} "Starting up NodeJs..."

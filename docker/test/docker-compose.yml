@@ -20,26 +20,27 @@ services:
       - redis
 
   node:
-      build:
-        context: ../../
-        dockerfile: docker/test/Dockerfile
-      environment:
-        - PORT=3000
-        - NODE_ENV=development
-        - MONGO_URL=mongo
-        - MONGO_DB=rtconn-development
-        - REDIS_HOST=redis
-      ports:
-        - 3000:3000
-        - 35729:35729 #LiveReload
-      volumes:
+    build:
+      context: ../../
+      dockerfile: docker/test/Dockerfile
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+      - MONGO_URL=mongo
+      - MONGO_DB=rtconn-development
+      - REDIS_HOST=redis
+    ports:
+      - 3000:3000
+      - 35729:35729 #LiveReload
+    volumes:
       - ../../src:/app
-      networks:
-        - rtconn
-      depends_on:
-        - mongo
-        - redis
-      command: ["npm", "run", "watch"]
+    networks:
+      - rtconn
+    depends_on:
+      - mongo
+      - redis
+    command: ["npm", "run", "watch"]
+
   mongo:
     image: mongo:latest
     networks:

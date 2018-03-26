@@ -17,7 +17,7 @@ COPY src/package.json src/.yarnrc src/yarn.lock /app/
 COPY  src/npm-packages-offline-cache /app/npm-packages-offline-cache
 #Install dependecies and remove cache modules
 RUN yarn install --offline  --frozen-lockfile && \
-    rm -rf npm-packages-offline-cache/
+    rm -rf npm-packages-offline-cache
 COPY src /app
 #ENTRYPOINT ["build.sh"]
 

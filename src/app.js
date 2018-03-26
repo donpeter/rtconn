@@ -10,6 +10,7 @@ const compress = require('compression');
 const routes = require('./routes/index');
 const users = require('./routes/user');
 const chat = require('./routes/chat');
+const static = require('./routes/static');
 
 const app = express();
 
@@ -35,11 +36,14 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(compress());
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
+// app.use('/static', express.static(path.join(__dirname, 'public')));
+// app.use('/static', express.static(path.join(__dirname, 'node_modules')));
 
 app.use('/', routes);
 app.use('/users', users);
 app.use('/chat', chat);
+app.use('/static', static);
 
 // /catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -1,32 +1,46 @@
 body {
   color: #333; }
 
-h1, h2, h3, h4, h5, h6 {
-  color: #ff966f; }
-
 header {
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../img/bg2.jpeg") no-repeat top center fixed;
   background-size: cover; }
+  header #typer {
+    color: whitesmoke !important;
+    margin: 20px auto; }
+
+footer {
+  color: whitesmoke;
+  padding: 20px 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 50, 40, 0.8)), no-repeat top left fixed;
+  background-size: cover;
+  box-sizing: border-box; }
+  footer h1, footer h2, footer h3 {
+    color: #70D6FF; }
+  footer ul {
+    padding: 0;
+    list-style: none; }
+  footer a {
+    color: whitesmoke; }
 
 .banner-header {
   color: whitesmoke;
-  height: 80vh;
+  min-height: 80vh;
+  max-height: 100vh;
   position: relative; }
   .banner-header .header-action {
-    padding: 10vh 0 0; }
+    padding: 15vh 0 0; }
   .banner-header .call-box {
     background-color: rgba(0, 104, 143, 0.6);
     padding: 25px 35px;
     margin-left: 0;
     margin-bottom: 20px;
     box-sizing: border-box; }
+    .banner-header .call-box input[type="submit"] {
+      color: whitesmoke; }
   .banner-header .bottom {
     position: absolute;
     bottom: 0;
     text-align: center; }
-    .banner-header .bottom #typer {
-      text-align: center;
-      margin: 20px auto; }
 
 nav ul li a.nav-link {
   color: whitesmoke !important;

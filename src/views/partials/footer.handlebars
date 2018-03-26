@@ -1,20 +1,39 @@
 <footer>
-  <div class="row">
-    <div class="col-md-4">
-      <h1>About RTConn</h1>
-      <p>RTConn is a RealTime peer-to-peer implemention of WebRTC. That allow you to connect with you families and
-        friends in real time. Developed by <a href="//www.donpeter.me"> Don Peter C. Atunalu.</a> as his final year
-        project </p>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h1>RTConn</h1>
+        <p>RTConn is a RealTime peer-to-peer implemention of WebRTC. That allow you to connect with you families and
+          friends in real time. Developed by <a class="text-secondary" href="//www.donpeter.me" target="_blank"> Don
+            Peter C. Atunalu.</a> as his final year
+          project </p>
+      </div>
+      <div class="col-md-3 offset-md-1">
+        <h2>About</h2>
+        <ul>
+          <li><a href="/">Home </a></li>
+          <li><a href="#">About </a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">FAQ?</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 offset-md-1">
+        <h2>Extra</h2>
+        <ul>
+          <li><a href="#">Docker</a></li>
+          <li><a href="#">BitBukket</a></li>
+          <li><a href="#">Jenkins</a></li>
+          <li><a href="#">Develop</a></li>
+        </ul>
+      </div>
     </div>
-    <div class="col-md-4"></div>
-    <div class="col-md-4"></div>
+    <p>Views: {{views}}</p>{{! Number of page visit}}
   </div>
-  <p>Views: {{views}}</p>{{! Number of page visit}}
 </footer>
 {{! Scripts }}
-<script src="components/jquery/dist/jquery.min.js"></script>
-<script src="components/popper.js/dist/umd/popper.min.js"></script>
-<script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="js/fontawesome-all.js"></script>
-<script src="js/index.js"></script>
+<script src="/static/jquery/dist/jquery.min.js"></script>
+<script src="/static/popper.js/dist/umd/popper.min.js"></script>
+<script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/static/js/fontawesome-all.js"></script>
+<script src="/static/js/index.js"></script>
 {{! End of Scripts}}
