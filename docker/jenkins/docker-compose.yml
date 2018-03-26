@@ -7,6 +7,10 @@ services:
         DOCKER_GID: ${DOCKER_GID} #export DOCKER_GID=$(cat /etc/group | grep docker | cut -d: -f3)
         DOCKER_ENGINE: ${DOCKER_ENGINE}
         DOCKER_COMPOSE: ${DOCKER_COMPOSE}
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 3s
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
