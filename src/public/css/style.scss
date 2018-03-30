@@ -5,6 +5,7 @@
 
 body {
   color: #333;
+  min-height: 100vh;
 }
 
 //h1, h2, h3, h4, h5, h6 {
@@ -12,16 +13,10 @@ body {
 //}
 
 header {
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-  url("../img/bg2.jpeg") no-repeat top center fixed;
-  background-size: cover;
-  #typer {
-    color: $white !important;
-    //text-align: center;
-    margin: 20px auto;
-  }
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 50, 40, 0.8)), no-repeat top left fixed;
+  color: $white;
+  margin: 0 0 10px 0;
 }
-
 footer {
   color: $white;
   padding: 20px 0;
@@ -42,14 +37,23 @@ footer {
     color: $white;
   }
 }
-.banner-header {
+
+header.banner-header {
   color: $white;
   min-height: 80vh;
   max-height: 100vh;
   position: relative;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+  url("../img/bg2.jpeg") no-repeat top center fixed;
+  background-size: cover;
+  #typer {
+    color: $white !important;
+    //text-align: center;
+    margin: 20px auto;
+  }
 
   .header-action {
-    padding: 15vh 0 0;
+    padding: 20vh 0 0;
   }
   .call-box {
     background-color: transparentize(invert($primary-color), 0.4);
@@ -112,5 +116,50 @@ nav ul li a.nav-link {
       box-shadow: none;
       background-color: inherit;
     }
+  }
+}
+
+//************LAYOUT**********************//
+.fullpage {
+  min-height: 500px;
+}
+
+.hide {
+  display: none;
+}
+
+//**************ANIMATION****************//
+#loader {
+  position: absolute;
+  left: 40%;
+  top: 40%;
+  z-index: 1;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid $primary-color;
+  border-right: 16px solid $secondary-color;
+  border-bottom: 16px solid $primary-color;
+  border-left: 16px solid $secondary-color;
+  width: 250px;
+  height: 250px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

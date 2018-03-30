@@ -27,13 +27,15 @@
         </ul>
       </div>
     </div>
-    <p>Views: {{views}}</p>{{! Number of page visit}}
+    <p>Views: {{views}} </p>{{! Number of page visit}}
   </div>
 </footer>
 {{! Scripts }}
-<script src="/static/jquery/dist/jquery.min.js"></script>
-<script src="/static/popper.js/dist/umd/popper.min.js"></script>
-<script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="/static/js/fontawesome-all.js"></script>
-<script src="/static/js/index.js"></script>
+{{#contentFor "pageScripts"}}
+  <script src="/static/jquery/dist/jquery.min.js"></script>
+  <script src="/static/popper.js/dist/umd/popper.min.js"></script>
+  <script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/static/js/fontawesome-all.js"></script>
+{{/contentFor}}
+
 {{! End of Scripts}}

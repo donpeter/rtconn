@@ -7,8 +7,9 @@
   <link rel="icon" href="/img/img_logo.png">
 
   <link rel="stylesheet" href="/static/css/bootstrap.css">
-  <link rel="stylesheet" href="/static/css/style.css"/>
-
+  <link rel="stylesheet" href="/static/css/style.css">
+  {{#block 'pageStyle'}}
+  {{/block}}
 
   <title>{{title }}</title>
   {{#if ENV_DEVELOPMENT}}
@@ -17,6 +18,7 @@
 </head>
 <body>
 {{{body}}}
-
+<!--{{{block "scripts"}}}-->
+{{{block "pageScripts"}}}
 </body>
 </html>

@@ -24,6 +24,19 @@ app.locals.ENV_DEVELOPMENT = env === 'development';
 app.engine('handlebars', exphbs({
   defaultLayout: 'main',
   partialsDir: ['views/partials/'],
+  helpers: {
+    block: function(name, options) {
+      var blocks = this._blocks,
+        content = blocks && blocks[name];
+      return content ? content.join('\n') : null;
+    },
+    contentFor: function(name, options) {
+      var blocks = this._blocks || (this._blocks = {}),
+        block = blocks[name] || (blocks[name] = []);
+      block.push(options.fn(this));
+    },
+  },
+
 }));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
