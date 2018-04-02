@@ -1,0 +1,212 @@
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/mixins";
+@import "mixins";
+@import "variables";
+
+#after-join{
+  aside{
+    height: 100vh;
+    border-right: 1px solid $gray-600;
+  }
+
+}
+#openTextChat{
+  color: $primary-color;
+  background: none;
+  font-size: 2em;
+  height: 70px;
+  width: 70px;
+  border: 1px solid $secondary-color;
+  @include border-radius(50%);
+  @include box-shadow(0, -1px, 20px, 0, $secondary-color);
+  padding: 10px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 0 15px 15px;
+  outline: none;
+  @include transition(right 0.4s, bottom 0.4s, color 0.6s);
+  &:hover{
+    color: invert($primary-color);
+    cursor: pointer;
+    right: 3px;
+    bottom: 3px;
+
+    @include box-shadow(0, -3px, 20px, 0, darken($secondary-color, .3));
+    //@include box-shadow(0, -5px, 20px, 0, transparentize($primary-color, .3));
+
+  }
+}
+//**************CHAT******************//
+.frame{
+  background:transparentize(darken($secondary-color, 30), .3) ;
+  //height:100vh;
+  overflow:hidden;
+  padding:0;
+  .close{
+    color: $white;
+    font-size: 1.5em;
+    background-color: darken($white, 60);
+    border: none;
+    outline: none;
+    height: 40px;
+    width: 40px;
+    margin-top: 2px;
+    cursor: pointer;
+    @include border-radius(50%);
+
+  }
+  > div:last-of-type{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    display:flex;
+  }
+  .text{
+    width:75%;
+    display:flex;
+    flex-direction:column;
+    > p:last-of-type{
+      width:100%;
+      text-align:right;
+      color:silver;
+      margin-bottom:-7px;
+      margin-top:auto;
+    }
+    > p:first-of-type{
+      width:100%;
+      margin-top:0;
+      margin-bottom:auto;
+      line-height: 13px;
+    }
+    .mytext{
+      border:0;
+      padding:10px;
+      background: $white;
+    }
+
+  }
+  .text-l{
+    float:left;
+    padding-right:10px;
+  }
+  .text-r{
+    float:right;padding-left:10px;
+  }
+  ul {
+    width:100%;
+    list-style-type: none;
+    padding:10px;
+    position:absolute;
+    bottom:47px;
+    display:flex;
+    flex-direction: column;
+    top:30px;
+    //overflow-y:scroll;
+    li{
+      width: 100%;
+      margin: 5px 0;
+    }
+  }
+  // .share{
+  //  background: $secondary-color;
+  //  padding: 10px;
+  //  font-size: 21px;
+  //  border-radius: 50%;
+  //}
+  .avatar{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:25%;
+    float:left;
+    padding-right:10px;
+  }
+  .macro{
+    margin-top:5px;
+    width:85%;
+    border-radius:5px;
+    padding:5px;
+    display:flex;
+  }
+  .msj-rta{
+    float:right;
+    background: $white;
+    &:after {
+      width: 0;
+      height: 0;
+      content: "";
+      top: -5px;
+      left: 14px;
+      position: relative;
+      border-style: solid;
+      border-width: 13px 13px 0 0;
+      border-color: $white transparent transparent transparent;
+    }
+  }
+  div.msj-rta.macro{
+    margin:auto;margin-left:1%;
+  }
+  .msj{
+    float:left;background:white;
+    &:before{
+      width: 0;
+      height: 0;
+      content:"";
+      top:-5px;
+      left:-14px;
+      position:relative;
+      border-style: solid;
+      border-width: 0 13px 13px 0;
+      border-color: transparent #ffffff transparent transparent;
+    }
+  }
+  input:focus{
+    outline: none;
+  }
+  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #d4d4d4;
+  }
+  ::-moz-placeholder { /* Firefox 19+ */
+    color: #d4d4d4;
+  }
+  :-ms-input-placeholder { /* IE 10+ */
+    color: #d4d4d4;
+  }
+  :-moz-placeholder { /* Firefox 18- */
+    color: #d4d4d4;
+  }
+}
+//**************LOADER****************//
+#loader {
+  position: absolute;
+  left: 40%;
+  top: 40%;
+  z-index: 1;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid $primary-color;
+  border-right: 16px solid $secondary-color;
+  border-bottom: 16px solid $primary-color;
+  border-left: 16px solid $secondary-color;
+  width: 250px;
+  height: 250px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

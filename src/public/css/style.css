@@ -1,13 +1,11 @@
 body {
   color: #333;
-  min-height: 100vh;
-}
+  min-height: 100vh; }
 
 header {
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 50, 40, 0.8)), no-repeat top left fixed;
   color: whitesmoke;
-  margin: 0 0 10px 0;
-}
+  margin: 0 0 10px 0; }
 
 footer {
   color: whitesmoke;
@@ -29,29 +27,21 @@ header.banner-header {
   max-height: 100vh;
   position: relative;
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../img/bg2.jpeg") no-repeat top center fixed;
-  background-size: cover;
-}
-
-header.banner-header #typer {
-  color: whitesmoke !important;
-  margin: 20px auto;
-}
-
-header.banner-header .header-action {
-  padding: 20vh 0 0;
-}
-
-header.banner-header .call-box {
+  background-size: cover; }
+  header.banner-header #typer {
+    color: whitesmoke !important;
+    margin: 20px auto; }
+  header.banner-header .header-action {
+    padding: 20vh 0 0; }
+  header.banner-header .call-box {
     background-color: rgba(0, 104, 143, 0.6);
     padding: 25px 35px;
     margin-left: 0;
     margin-bottom: 20px;
     box-sizing: border-box; }
-
-header.banner-header .call-box input[type="submit"] {
+    header.banner-header .call-box input[type="submit"] {
       color: whitesmoke; }
-
-header.banner-header .bottom {
+  header.banner-header .bottom {
     position: absolute;
     bottom: 0;
     text-align: center; }
@@ -87,44 +77,18 @@ nav ul li a.nav-link {
       background-color: inherit; }
 
 .fullpage {
-  min-height: 500px;
-}
+  min-height: 500px; }
 
 .hide {
-  display: none;
-}
+  display: none; }
 
-#loader {
-  position: absolute;
-  left: 40%;
-  top: 40%;
-  z-index: 1;
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #FF9770;
-  border-right: 16px solid #70D6FF;
-  border-bottom: 16px solid #FF9770;
-  border-left: 16px solid #70D6FF;
-  width: 250px;
-  height: 250px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-}
+.nopadding {
+  margin: 0 !important;
+  padding: 0 !important; }
 
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
+.vh {
+  min-height: 100vh; }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+.box-200 {
+  height: 200px;
+  background: #333; }

@@ -2,7 +2,15 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  const data = {title: 'RTConn'};
+  const data = {
+    title: 'RTConn',
+    users: [
+      {
+        id: 1001,
+        username: "Don Peter"
+      }
+    ]
+  };
   res.render('chat', data);
 });
 

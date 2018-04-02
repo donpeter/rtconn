@@ -119,47 +119,26 @@ nav ul li a.nav-link {
   }
 }
 
-//************LAYOUT**********************//
+//************GENERAL**********************//
 .fullpage {
   min-height: 500px;
 }
-
 .hide {
   display: none;
 }
-
-//**************ANIMATION****************//
-#loader {
-  position: absolute;
-  left: 40%;
-  top: 40%;
-  z-index: 1;
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid $primary-color;
-  border-right: 16px solid $secondary-color;
-  border-bottom: 16px solid $primary-color;
-  border-left: 16px solid $secondary-color;
-  width: 250px;
-  height: 250px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
+.nopadding{
+  margin: 0 !important;
+  padding: 0 !important;
 }
-
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
+.btn{
+  //color: $white;
+  //font-size: 1.2em;
 }
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+.vh{
+  min-height: 100vh;
+}
+.box-200{
+  height: 200px;
+  //width: 300px;
+  background: #333;
 }
