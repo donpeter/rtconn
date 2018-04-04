@@ -3,16 +3,16 @@ const Schema= mongoose.Schema;
 const roomSchema = Schema({
   name: {
     type: String,
-    lowercase: true
+    lowercase: true,
   },
   password: String,
   type: {
-    type: String
+    type: String,
   },
   owner: {
     type: Schema.ObjectId,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
 });
 
 const Room = mongoose.Model('Room', roomSchema);

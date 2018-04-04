@@ -6,10 +6,19 @@ router.get('/', (req, res) => {
     title: 'RTConn',
     users: [
       {
-        id: 1001,
-        username: "Don Peter"
-      }
-    ]
+        id: 'donpeter',
+        username: 'donpeter',
+      },{
+        id: 'patunalu',
+        username: 'patunalu',
+      },{
+        id: 'dubem',
+        username: 'dubem',
+      },{
+        id: 'chidubem',
+        username: 'chidubem',
+      },
+    ],
   };
   res.render('chat', data);
 });

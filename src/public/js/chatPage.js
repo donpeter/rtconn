@@ -1,6 +1,6 @@
 $(function() {
   setTimeout(showSetupPage, 1000);
-  $('#cameraForm').submit(function(e) {
+  $('#joinCallForm').submit(function(e) {
     e.preventDefault();
     showTextChatPage();
   });
@@ -24,19 +24,21 @@ function showTextChatPage() {
 }
 function openTextChat() {
   var speed= 500;
-  $('[role="videoChatBox"]').toggleClass('col-md-7 col-md-10');
+  $('#usersVideo').toggleClass('col-md-7 col-md-10');
   $('#openTextChat').hide(speed);
   $('[role="textChatBox"]').show(speed);
 }
 function closeTextChat() {
   var speed= 500;
-  // $('[role="videoChatBox"]').toggleClass('col-md-7 col-md-10');
+  // $('#usersVideo').toggleClass('col-md-7 col-md-10');
   $('#openTextChat').show(speed);
   $('[role="textChatBox"]').slideUp(speed, function(){
-    $('[role="videoChatBox"]').toggleClass('col-md-7 col-md-10')
+    $('#usersVideo').toggleClass('col-md-7 col-md-10')
   });
 
 }
 function toggleTextChat() {
    $('[role="textChatBox"]').is( ":hidden" ) ? openTextChat() : closeTextChat();
 }
+var socket = io();
+

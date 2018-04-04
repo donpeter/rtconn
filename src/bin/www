@@ -5,6 +5,7 @@
  */
 
 const app = require('../app');
+const io = require('../socket.io');
 const debug = require('debug')('app:server');
 const http = require('http');
 
@@ -20,7 +21,7 @@ app.set('port', port);
  */
 
 const server = http.createServer(app);
-
+io.attach(server);
 /**
  * Listen on provided port, on all network interfaces.
  */

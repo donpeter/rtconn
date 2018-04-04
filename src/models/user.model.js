@@ -5,7 +5,7 @@ const userSchema = Schema({
   username: {
     type: String,
     lowercase: true,
-    unique: true
+    unique: true,
   },
   nickname: String,
   password: {
@@ -13,8 +13,8 @@ const userSchema = Schema({
   },
   email: {
     type: String,
-    unique: true
-  }
+    unique: true,
+  },
 });
 
 const User = mongoose.Model('User', userSchema);

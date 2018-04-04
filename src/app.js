@@ -1,11 +1,12 @@
 const express = require('express');
 const path = require('path');
-const favicon = require('serve-favicon');
+// const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 const compress = require('compression');
+const io = require('./socket.io');
 
 const routes = require('./routes/index');
 const users = require('./routes/user');
@@ -13,6 +14,8 @@ const chat = require('./routes/chat');
 const static = require('./routes/static');
 
 const app = express();
+app.io = io;
+// app.http().io();
 
 const env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
@@ -26,12 +29,12 @@ app.engine('handlebars', exphbs({
   partialsDir: ['views/partials/'],
   helpers: {
     block: function(name, options) {
-      var blocks = this._blocks,
+      const blocks = this._blocks,
         content = blocks && blocks[name];
       return content ? content.join('\n') : null;
     },
     contentFor: function(name, options) {
-      var blocks = this._blocks || (this._blocks = {}),
+      const blocks = this._blocks || (this._blocks = {}),
         block = blocks[name] || (blocks[name] = []);
       block.push(options.fn(this));
     },
@@ -50,6 +53,11 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(compress());
 
+//for sharing this io object throughout the application
+app.use(function(req, res, next){
+  res.io = io;
+  next();
+});
 app.use('/', routes);
 app.use('/users', users);
 app.use('/chat', chat);

@@ -1,3 +1,7 @@
+video {
+  width: 100%;
+  max-height: 100%; }
+
 #after-join aside {
   height: 100vh;
   border-right: 1px solid #6c757d; }
@@ -36,6 +40,14 @@
     -webkit-box-shadow: 0 -3px 20px 0 #6ed6ff;
     -moz-box-shadow: 0 -3px 20px 0 #6ed6ff;
     box-shadow: 0 -3px 20px 0 #6ed6ff; }
+
+#usersVideo {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: auto auto; }
+
+#myVideoBox #myVideo {
+  width: 100%; }
 
 .frame {
   background: rgba(0, 153, 214, 0.7);

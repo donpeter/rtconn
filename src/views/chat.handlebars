@@ -3,16 +3,15 @@
 <div class="container animate-bottom vh">
   <div id="loader"></div>
   <div id="before-join" class="hide">
-    <h2 class="text-center">Ready to join a <span><img src="/static/img/img_logo.png" alt="" width="100"
-                                                       height="50"></span> chat?</h2>
+    <h2 class="text-center">Ready to join a chat?</h2>
     <p class="text-center">RTConn is truly simple video chat and screen sharing for groups.</p>
     <div class="animate-bottom mt-5">
       <div class="row">
-        <div class="offset-md-2 col-md-4 bg-dark">
-          <video id="myVideo"></video>
+        <div class="offset-md-2 col-md-4">
+          <video id="myVideoPreview"></video>
         </div>
         <div class="col-md-3">
-          <form action="" method="POST" id="cameraForm">
+          <form action="" method="POST" id="joinCallForm">
             <div class="form-group">
               <label for="camera"><i class="fa fa-video"></i> Camera:</label>
               <select name="camera" id="cameras" class="form-control">
@@ -28,7 +27,7 @@
               </select>
             </div>
             <div class="form-group">
-              <input type="submit" class="btn btn-primary">
+              <input id="joinCall" type="submit" class="btn btn-primary" value="Join Call">
             </div>
           </form>
         </div>
@@ -49,8 +48,8 @@
             <button href="#" class="btn btn-outline-danger btn-block mb-3"><i class="fas fa-sign-in-alt"></i> Leave</button>
           </div>
         </div>
-        <div class="box-200 mb-2">
-          Video
+        <div id="myVideoBox" class="mb-2">
+          <video id="myVideo"></video>
         </div>
         <div id="controls" class="mb-3">
           <button class="btn btn-sm"><i class="fas fa-microphone"></i></button>
@@ -59,11 +58,10 @@
         </div>
         <div id="active-users"></div>
       </aside>
-      <div class="col-md-10" role="videoChatBox">
+      <div id="usersVideo" class="col-md-10">
         {{#each users}}
           <div class="other-users">
             <video id="{{this.id}}"></video>
-            {{this.username}}
           </div>
         {{/each}}
         <button id="openTextChat"role="openTextChat"><i class="fab fa-rocketchat"></i></button>
@@ -117,7 +115,9 @@
 
 {{!-- Embeed custom Scipts to the main.handlebar layout--}}
 {{#contentFor 'pageScripts'}}
+  <script src="/socket.io/socket.io.js"></script>
   <script src="/static/js/chatPage.js"></script>
+  <script src="/static/js/webrtc.js"></script>
 {{/contentFor}}
 
 {{!-- Embeed custom stylesheet to the main.handlebar layout--}}
