@@ -8,10 +8,10 @@ const exphbs = require('express-handlebars');
 const compress = require('compression');
 const io = require('./socket.io');
 
-const routes = require('./routes/index');
-const users = require('./routes/user');
-const chat = require('./routes/chat');
-const static = require('./routes/static');
+const index = require('./routes/index.route');
+const users = require('./routes/user.route');
+const chat = require('./routes/chat.route');
+const static = require('./routes/static.route');
 
 const app = express();
 app.io = io;
@@ -53,12 +53,12 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(compress());
 
-//for sharing this io object throughout the application
-app.use(function(req, res, next){
-  res.io = io;
-  next();
-});
-app.use('/', routes);
+// for sharing this io object throughout the application
+// app.use(function(req, res, next) {
+//   res.io = io;
+//   next();
+// });
+app.use('/', index);
 app.use('/users', users);
 app.use('/chat', chat);
 app.use('/static', static);

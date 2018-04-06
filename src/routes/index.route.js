@@ -1,6 +1,7 @@
 const express = require('express');
 const redisClient = require('../config/redis');
 const db = require('../config/mongo');
+const chatController = require('../controller/chat.controller');
 const router = express.Router();
 
 /* GET home page. */
@@ -17,4 +18,7 @@ router.get('/test', (req, res) => {
   redisClient.set('views', 0);
   res.json({foo: 'foo'});
 });
+
+
+router.get('/:room', chatController.index);
 module.exports = router;

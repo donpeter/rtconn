@@ -1,6 +1,6 @@
 //Variables
 var myVideo = document.querySelector('#myVideoPreview');
-var users= ['donpeter', 'patunalu', 'dubem', 'chidubem'];
+var users = ['donpeter', 'patunalu', 'dubem', 'chidubem']; // used for testing
 // Older browsers might not implement mediaDevices at all, so we set an empty object first
 if (navigator.mediaDevices === undefined) {
   navigator.mediaDevices = {};
@@ -27,12 +27,13 @@ if (navigator.mediaDevices.getUserMedia === undefined) {
     });
   }
 }
-
+console.log(navigator.mediaDevices);
 //Set video constrain
 var myVideoConstrain = {
   audio: false,
-  video: {height: {min: 400}}
-}
+  video: {height: {min: 400}},
+  facingMode: true,
+};
 
 addUserMedia(myVideo, myVideoConstrain);
 $(function() {
@@ -45,7 +46,7 @@ $(function() {
     var myVideoConstrain = {
       audio: false,
       video: {width: {max: 200}, height: {max: 250}}
-    }
+    };
     addUserMedia(myVideo, myVideoConstrain);
     users.forEach(function(user) {
       var videos = document.querySelector('#'+user);
@@ -56,8 +57,12 @@ $(function() {
 
     })
   })
-})
+});
 
+/*
+* Add uses media on select video element
+* @param DomEle video, Object constrain
+* */
 function addUserMedia(video, constrain) {
   constrain = constrain || { audio: true, video: true};
   navigator.mediaDevices.getUserMedia(constrain)
