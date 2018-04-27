@@ -1,6 +1,5 @@
 const express = require('express');
 const redisClient = require('../config/redis');
-const db = require('../config/mongo');
 const chatController = require('../controller/chat.controller');
 const router = express.Router();
 

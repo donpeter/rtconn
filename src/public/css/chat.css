@@ -168,6 +168,21 @@ video {
     /* Firefox 18- */
     color: #d4d4d4; }
 
+#messages {
+  padding-top: 10px;
+  overflow-y: auto;
+  /* width */
+  /* Track */
+  /* Handle */ }
+  #messages::-webkit-scrollbar {
+    width: 5px; }
+  #messages::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px; }
+  #messages::-webkit-scrollbar-thumb {
+    background: #FF9770;
+    border-radius: 10px; }
+
 #loader {
   position: absolute;
   left: 40%;

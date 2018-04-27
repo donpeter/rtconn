@@ -119,6 +119,10 @@ nav ul li a.nav-link {
   }
 }
 
+video {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
 //************GENERAL**********************//
 .fullpage {
   min-height: 500px;

@@ -27,12 +27,10 @@ if (navigator.mediaDevices.getUserMedia === undefined) {
     });
   }
 }
-console.log(navigator.mediaDevices);
 //Set video constrain
 var myVideoConstrain = {
   audio: false,
   video: {height: {min: 400}},
-  facingMode: true,
 };
 
 addUserMedia(myVideo, myVideoConstrain);

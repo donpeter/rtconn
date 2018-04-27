@@ -6,16 +6,15 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 const compress = require('compression');
-const io = require('./socket.io');
-
 const index = require('./routes/index.route');
+
 const users = require('./routes/user.route');
 const chat = require('./routes/chat.route');
 const static = require('./routes/static.route');
+const io = require('./socket.io');
 
 const app = express();
 app.io = io;
-// app.http().io();
 
 const env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;

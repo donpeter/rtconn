@@ -1,5 +1,4 @@
-const socketController = require('./socket.controller');
-const io = require('../socket.io');
+// const io = require('../socket.io');
 const index = (req, res) => {
   const data = {
     title: 'RTConn',
@@ -19,8 +18,8 @@ const index = (req, res) => {
       },
     ],
   };
-  const namespace = req.params.room.toLowerCase();
-  const nsp = io.of(namespace);
+  // const namespace = req.params.room.toLowerCase();
+  // const nsp = io.of(namespace);
   // const nsp =res.io;
   /*
   nsp.on('connection', function(socket) {

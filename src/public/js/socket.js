@@ -83,6 +83,7 @@ function appendReceivedMessage(mes) {
 * */
 function getUrlPath() {
   var namespace = window.location.pathname.split('/');
+  console.log(namespace);
   return '/' + namespace[namespace.length - 1];
 }
 

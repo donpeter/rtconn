@@ -76,6 +76,10 @@ nav ul li a.nav-link {
       box-shadow: none;
       background-color: inherit; }
 
+video {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1); }
+
 .fullpage {
   min-height: 500px; }
 
