@@ -22,7 +22,7 @@ services:
     networks:
       - rtconn
     ports:
-      - 8081:80
+      - 80:80
     depends_on:
       - app
   agent:
