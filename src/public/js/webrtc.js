@@ -1,6 +1,8 @@
 //Variables
 var myVideo = document.querySelector('#myVideoPreview');
-var users = ['donpeter', 'patunalu', 'dubem', 'chidubem']; // used for testing
+//TODO Fetch all users in the room
+var users = ['donpeter']; // used for testing
+
 // Older browsers might not implement mediaDevices at all, so we set an empty object first
 if (navigator.mediaDevices === undefined) {
   navigator.mediaDevices = {};
@@ -30,7 +32,7 @@ if (navigator.mediaDevices.getUserMedia === undefined) {
 //Set video constrain
 var myVideoConstrain = {
   audio: false,
-  video: {height: {min: 400}},
+  video: {height: {min: 150}},
 };
 
 addUserMedia(myVideo, myVideoConstrain);

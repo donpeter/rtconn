@@ -2,21 +2,10 @@
 const index = (req, res) => {
   const data = {
     title: 'RTConn',
-    users: [
-      {
+    users: [{
         id: 'donpeter',
         username: 'donpeter',
-      }, {
-        id: 'patunalu',
-        username: 'patunalu',
-      }, {
-        id: 'dubem',
-        username: 'dubem',
-      }, {
-        id: 'chidubem',
-        username: 'chidubem',
-      },
-    ],
+    }]
   };
   // const namespace = req.params.room.toLowerCase();
   // const nsp = io.of(namespace);
