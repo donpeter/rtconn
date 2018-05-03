@@ -1,16 +1,15 @@
 @import "../../node_modules/bootstrap/scss/functions";
 @import "mixins";
 @import "variables";
-
-
+@import "bootstrap.scss";
+//@import "../../node_modules/bootswatch/dist/superhero/_variables.scss";
+//@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+//@import "../../node_modules/bootswatch/dist/superhero/_bootswatch.scss";
 body {
   color: #333;
   min-height: 100vh;
 }
 
-//h1, h2, h3, h4, h5, h6 {
-//  color: darken($primary-color, .2);
-//}
 
 header {
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 50, 40, 0.8)), no-repeat top left fixed;
@@ -133,10 +132,6 @@ video {
 .nopadding{
   margin: 0 !important;
   padding: 0 !important;
-}
-.btn{
-  //color: $white;
-  //font-size: 1.2em;
 }
 .vh{
   min-height: 100vh;

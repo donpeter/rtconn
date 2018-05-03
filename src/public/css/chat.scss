@@ -39,7 +39,12 @@
 }
 
 //**************Video CHAT******************//
-#myVideoPreview {
+video {
+  max-width: 100%;
+  //max-height: 100%;
+}
+
+#localVideoBox {
   max-width: 100%;
   max-height: 100%;
 }
@@ -55,8 +60,9 @@
     }
   }
 }
-#myVideoBox{
-  #myVideo{
+
+#localVideoBox {
+  #localVideo {
     width: 100%;
   }
 }
@@ -143,6 +149,11 @@
     width:25%;
     float:left;
     padding-right:10px;
+    img {
+      @include border-radius(50%);
+      max-width: 60px;
+      max-height: 60px;
+    }
   }
   .macro{
     margin-top:5px;

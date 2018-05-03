@@ -6,6 +6,8 @@ $(function() {
   });
   $('#openTextChat').click(toggleTextChat);
   $('#closeTextChat').click(toggleTextChat);
+
+
 });
 
 /*

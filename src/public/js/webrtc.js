@@ -1,7 +1,57 @@
+'use strict';
+
 //Variables
-var myVideo = document.querySelector('#myVideoPreview');
-//TODO Fetch all users in the room
-var users = ['donpeter']; // used for testing
+var setupVideo = document.querySelector('#setupVideo'),
+  localVideo = document.querySelector('#localVideo'),
+  remoteVideo = document.querySelector('#remoteVideo'),
+  videoSelect = document.querySelector('#videoSelect'),
+  audioSelect = document.querySelector('#audioSelect'),
+  image = document.querySelector('#screenshot'),
+  errorMessage = document.querySelector('#errorMessage');
+
+var localStream, remoteStream, setupStream;
+
+//Get video constrain
+function getVideoConstrains(constrain) {
+  var constrains = {
+    fullHdConstraints: {
+      video: {
+        width: {exact: 1920},
+        height: {exact: 1080},
+        deviceId: {exact: videoSelect.value},
+      },
+      audio: {deviceId: {exact: audioSelect.value}},
+    },
+    hdConstraints: {
+      video: {
+        width: {min: 1280},
+        height: {min: 720},
+        deviceId: {exact: videoSelect.value},
+      },
+      audio: {deviceId: {exact: audioSelect.value}},
+    },
+    vgaConstraints: {
+      video: {
+        width: {ideal: 640},
+        height: {ideal: 480},
+        deviceId: {exact: videoSelect.value},
+      },
+      audio: false,
+      // audio: {deviceId: {exact: audioSelect.value}},
+    },
+    qvgaConstraints: {
+      video: {
+        width: {exact: 320},
+        height: {exact: 240},
+        deviceId: {exact: videoSelect.value},
+      },
+      audio: false,
+      // audio: {deviceId: {exact: audioSelect.value}},
+    },
+  };
+  return constrains[constrain];
+}
+
 
 // Older browsers might not implement mediaDevices at all, so we set an empty object first
 if (navigator.mediaDevices === undefined) {
@@ -29,56 +79,430 @@ if (navigator.mediaDevices.getUserMedia === undefined) {
     });
   }
 }
-//Set video constrain
-var myVideoConstrain = {
-  audio: false,
-  video: {height: {min: 150}},
-};
-
-addUserMedia(myVideo, myVideoConstrain);
-$(function() {
-  $('#joinCallForm').submit(function(e) {
-    e.preventDefault();
-    // myVideo.stop();
-    //Update user video variable
-    var myVideo = document.querySelector('#myVideo');
-    //Set video constrain
-    var myVideoConstrain = {
-      audio: false,
-      video: {width: {max: 200}, height: {max: 250}}
-    };
-    addUserMedia(myVideo, myVideoConstrain);
-    users.forEach(function(user) {
-      var videos = document.querySelector('#'+user);
-      addUserMedia(videos, {
-        audio: false,
-        video: {width: 1024}
-      });
-
-    })
-  })
-});
 
 /*
-* Add uses media on select video element
-* @param DomEle video, Object constrain
+* Get user devices list
 * */
-function addUserMedia(video, constrain) {
-  constrain = constrain || { audio: true, video: true};
-  navigator.mediaDevices.getUserMedia(constrain)
-    .then(function(stream) {
-      // Older browsers may not have srcObject
-      if ("srcObject" in video) {
-        video.srcObject = stream;
-      } else {
-        // Avoid using this in new browsers, as it is going away.
-        video.src = window.URL.createObjectURL(stream);
-      }
-      video.onloadedmetadata = function(e) {
-        video.play();
-      };
-    })
-    .catch(function(err) {
-      console.log(err.name + ": " + err.message);
+navigator.mediaDevices.enumerateDevices()
+  .then(gotDevices).then(getStream).catch(handleError);
+setupVideo.onclick = function() {
+  image.src = takeScreenshot(setupVideo);
+};
+audioSelect.onchange = getStream;
+videoSelect.onchange = getStream;
+
+//List out all video and audio devices as options
+function gotDevices(deviceInfos) {
+  for (var i = 0; i !== deviceInfos.length; ++i) {
+    var deviceInfo = deviceInfos[i];
+    var option = document.createElement('option');
+    option.value = deviceInfo.deviceId;
+    if (deviceInfo.kind === 'audioinput') {
+      option.text = deviceInfo.label ||
+        'microphone ' + (audioSelect.length + 1);
+      audioSelect.appendChild(option);
+    } else if (deviceInfo.kind === 'videoinput') {
+      option.text = deviceInfo.label || 'camera ' +
+        (videoSelect.length + 1);
+      videoSelect.appendChild(option);
+    } else {
+      // console.log('Found one other kind of source/device: ', deviceInfo);
+    }
+  }
+}
+
+//Get local video stream
+function getStream() {
+  if (setupStream) {
+    setupStream.getTracks().forEach(function(track) {
+      track.stop();
     });
+  }
+
+  var constraints = getVideoConstrains('vgaConstraints');
+
+
+  navigator.mediaDevices.getUserMedia(constraints).then(gotStream).catch(handleError);
+}
+
+//Plays the stream
+function gotStream(stream) {
+  setupStream = stream; // make stream available to console
+  // Older browsers may not have srcObject
+  if ('srcObject' in setupVideo) {
+    setupVideo.srcObject = stream;
+  } else {
+    // Avoid using this in new browsers, as it is going away.
+    setupVideo.src = window.URL.createObjectURL(stream);
+  }
+  setupVideo.onloadedmetadata = function(e) {
+    setupVideo.play();
+  };
+}
+
+//Handles WebRTC error
+function handleError(error) {
+  if (error.name === 'ConstraintNotSatisfiedError') {
+    errorMsg('The resolution ' + constraints.video.width.exact + 'x' +
+      constraints.video.width.exact + ' px is not supported by your device.');
+  } else if (error.name === 'PermissionDeniedError') {
+    errorMsg('Permissions have not been granted to use your camera and ' +
+      'microphone, you need to allow the page access to your devices in ' +
+      'order for the demo to work.');
+  }
+  errorMsg('getUserMedia error: ' + error.name, error);
+}
+
+//Displays All error to user
+function errorMsg(msg, error) {
+  errorMessage.innerHTML += '<p>' + msg + '</p>';
+  if (typeof error !== 'undefined') {
+    console.error(error);
+  }
+}
+
+/*
+* Take Screenshot of the video stream
+* @return Image url
+* */
+function takeScreenshot(video, width, height) {
+  video = video || localVideo; //Sets localVideo as default value
+  const canvas = document.createElement('canvas');
+  canvas.width = width || video.videoWidth;
+  canvas.height = height || video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  return canvas.toDataURL('image/webp');
+
+}
+
+var iceServers = {
+  'iceServers': [
+    {
+      'urls': 'stun:stun.l.google.com:19302',
+    },
+    {
+      'urls': 'turn:192.158.29.39:3478?transport=udp',
+      'credential': 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+      'username': '28224511:1379330808',
+    },
+    {
+      'urls': 'turn:192.158.29.39:3478?transport=tcp',
+      'credential': 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+      'username': '28224511:1379330808',
+    },
+  ],
+};
+let localPeerConnection;
+let remotePeerConnection;
+
+
+// Define MediaStreams callbacks.
+
+// Sets the MediaStream as the video element src.
+function gotLocalMediaStream(mediaStream) {
+  localStream = mediaStream; // make mediaStream available to console
+  // Older browsers may not have srcObject
+  if ('srcObject' in localVideo) {
+    localVideo.srcObject = mediaStream;
+  } else {
+    // Avoid using this in new browsers, as it is going away.
+    localVideo.src = window.URL.createObjectURL(mediaStream);
+  }
+  localVideo.onloadedmetadata = function(e) {
+    localVideo.play();
+  };
+  trace('Received local stream.');
+  // callAction(); //Start Calling
+}
+
+// Handles error by logging a message to the console.
+function handleLocalMediaStreamError(error) {
+  trace(`navigator.getUserMedia error: ${error.toString()}.`);
+}
+
+// Handles remote MediaStream success by adding it as the remoteVideo src.
+function gotRemoteMediaStream(event) {
+  const mediaStream = event.stream;
+  remoteVideo.srcObject = mediaStream;
+  remoteStream = mediaStream;
+  trace('Remote peer connection received remote stream.');
+}
+
+
+// Add behavior for video streams.
+
+// Logs a message with the id and size of a video element.
+function logVideoLoaded(event) {
+  const video = event.target;
+  trace(`${video.id} videoWidth: ${video.videoWidth}px, ` +
+    `videoHeight: ${video.videoHeight}px.`);
+}
+
+// Logs a message with the id and size of a video element.
+// This event is fired when video begins streaming.
+function logResizedVideo(event) {
+  logVideoLoaded(event);
+
+  if (startTime) {
+    const elapsedTime = window.performance.now() - startTime;
+    startTime = null;
+    trace(`Setup time: ${elapsedTime.toFixed(3)}ms.`);
+  }
+}
+
+localVideo.addEventListener('loadedmetadata', logVideoLoaded);
+remoteVideo.addEventListener('loadedmetadata', logVideoLoaded);
+remoteVideo.addEventListener('onresize', logResizedVideo);
+
+
+// Define RTC peer connection behavior.
+
+// Connects with new peer candidate.
+function handleConnection(event) {
+  const peerConnection = event.target;
+  const iceCandidate = event.candidate;
+
+  if (iceCandidate) {
+    const newIceCandidate = new RTCIceCandidate(iceCandidate);
+    const otherPeer = getOtherPeer(peerConnection);
+
+    otherPeer.addIceCandidate(newIceCandidate)
+      .then(() => {
+        handleConnectionSuccess(peerConnection);
+      }).catch((error) => {
+      handleConnectionFailure(peerConnection, error);
+    });
+
+    trace(`${getPeerName(peerConnection)} ICE candidate:\n` +
+      `${event.candidate.candidate}.`);
+  }
+}
+
+// Logs that the connection succeeded.
+function handleConnectionSuccess(peerConnection) {
+  trace(`${getPeerName(peerConnection)} addIceCandidate success.`);
+};
+
+// Logs that the connection failed.
+function handleConnectionFailure(peerConnection, error) {
+  trace(`${getPeerName(peerConnection)} failed to add ICE Candidate:\n` +
+    `${error.toString()}.`);
+}
+
+// Logs changes to the connection state.
+function handleConnectionChange(event) {
+  const peerConnection = event.target;
+  console.log('ICE state change event: ', event);
+  trace(`${getPeerName(peerConnection)} ICE state: ` +
+    `${peerConnection.iceConnectionState}.`);
+}
+
+// Logs error when setting session description fails.
+function setSessionDescriptionError(error) {
+  trace(`Failed to create session description: ${error.toString()}.`);
+}
+
+// Logs success when setting session description.
+function setDescriptionSuccess(peerConnection, functionName) {
+  const peerName = getPeerName(peerConnection);
+  trace(`${peerName} ${functionName} complete.`);
+}
+
+// Logs success when localDescription is set.
+function setLocalDescriptionSuccess(peerConnection) {
+  setDescriptionSuccess(peerConnection, 'setLocalDescription');
+}
+
+// Logs success when remoteDescription is set.
+function setRemoteDescriptionSuccess(peerConnection) {
+  setDescriptionSuccess(peerConnection, 'setRemoteDescription');
+}
+
+// Logs offer creation and sets peer connection session descriptions.
+function createdOffer(description) {
+  trace(`Offer from localPeerConnection:\n${description.sdp}`);
+
+  trace('localPeerConnection setLocalDescription start.');
+  localPeerConnection.setLocalDescription(description)
+    .then(() => {
+      setLocalDescriptionSuccess(localPeerConnection);
+    }).catch(setSessionDescriptionError);
+
+  trace('remotePeerConnection setRemoteDescription start.');
+  remotePeerConnection.setRemoteDescription(description)
+    .then(() => {
+      setRemoteDescriptionSuccess(remotePeerConnection);
+    }).catch(setSessionDescriptionError);
+
+  trace('remotePeerConnection createAnswer start.');
+  remotePeerConnection.createAnswer()
+    .then(createdAnswer)
+    .catch(setSessionDescriptionError);
+}
+
+// Logs answer to offer creation and sets peer connection session descriptions.
+function createdAnswer(description) {
+  trace(`Answer from remotePeerConnection:\n${description.sdp}.`);
+
+  trace('remotePeerConnection setLocalDescription start.');
+  remotePeerConnection.setLocalDescription(description)
+    .then(() => {
+      setLocalDescriptionSuccess(remotePeerConnection);
+    }).catch(setSessionDescriptionError);
+
+  trace('localPeerConnection setRemoteDescription start.');
+  localPeerConnection.setRemoteDescription(description)
+    .then(() => {
+      setRemoteDescriptionSuccess(localPeerConnection);
+    }).catch(setSessionDescriptionError);
+}
+
+
+// Define and add behavior to buttons.
+
+// Define action buttons.
+const startButton = document.getElementById('startButton');
+const callButton = document.getElementById('joinCall');
+const hangupButton = document.getElementById('hangup');
+
+// Set up initial action buttons status: disable call and hangup.
+callButton.disabled = true;
+hangupButton.disabled = true;
+
+
+// Handles start button action: creates local MediaStream.
+function startAction() {
+  if (setupStream) {
+    setupStream.getTracks().forEach(function(track) {
+      track.stop();
+    });
+  }
+
+  var constraints = getVideoConstrains('vgaConstraints');
+
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then(gotLocalMediaStream).catch(handleLocalMediaStreamError);
+  trace('Requesting local stream.');
+}
+
+// Handles call button action: creates peer connection.
+function callAction() {
+  callButton.disabled = true;
+  hangupButton.disabled = false;
+
+  trace('Starting call.');
+  startTime = window.performance.now();
+
+  // Get local media stream tracks.
+  const videoTracks = localStream.getVideoTracks();
+  const audioTracks = localStream.getAudioTracks();
+  if (videoTracks.length > 0) {
+    trace(`Using video device: ${videoTracks[0].label}.`);
+  }
+  if (audioTracks.length > 0) {
+    trace(`Using audio device: ${audioTracks[0].label}.`);
+  }
+
+  const servers = null;  // Allows for RTC server configuration.
+
+  // Create peer connections and add behavior.
+  localPeerConnection = new RTCPeerConnection(servers);
+  trace('Created local peer connection object localPeerConnection.');
+
+  localPeerConnection.addEventListener('icecandidate', handleConnection);
+  localPeerConnection.addEventListener(
+    'iceconnectionstatechange', handleConnectionChange);
+
+  remotePeerConnection = new RTCPeerConnection(servers);
+  trace('Created remote peer connection object remotePeerConnection.');
+
+  remotePeerConnection.addEventListener('icecandidate', handleConnection);
+  remotePeerConnection.addEventListener(
+    'iceconnectionstatechange', handleConnectionChange);
+  remotePeerConnection.addEventListener('addstream', gotRemoteMediaStream);
+
+  // Add local stream to connection and create offer to connect.
+  localPeerConnection.addStream(localStream);
+  trace('Added local stream to localPeerConnection.');
+
+  trace('localPeerConnection createOffer start.');
+  var offerOptions = {
+    offerToReceiveAudio: 1,
+    offerToReceiveVideo: 1,
+  };
+
+  localPeerConnection.createOffer(offerOptions)
+    .then(createdOffer).catch(setSessionDescriptionError);
+}
+
+// Handles hangup action: ends up call, closes connections and resets peers.
+function hangupAction() {
+  localPeerConnection.close();
+  remotePeerConnection.close();
+  localPeerConnection = null;
+  remotePeerConnection = null;
+  hangupButton.disabled = true;
+  callButton.disabled = false;
+  trace('Ending call.');
+}
+
+// Add click event handlers for buttons.
+// startButton.addEventListener('click', startAction);
+callButton.addEventListener('click', startAction);
+hangupButton.addEventListener('click', hangupAction);
+
+
+// Define helper functions.
+
+// Gets the "other" peer connection.
+function getOtherPeer(peerConnection) {
+  return (peerConnection === localPeerConnection) ?
+    remotePeerConnection : localPeerConnection;
+}
+
+// Gets the name of a certain peer connection.
+function getPeerName(peerConnection) {
+  return (peerConnection === localPeerConnection) ?
+    'localPeerConnection' : 'remotePeerConnection';
+}
+
+
+//
+//TODO Fetch all users in the room
+// var users = ['donpeter']; // used for testing
+//
+// $(function() {
+//   $('#joinCallForm').submit(function(e) {
+//     e.preventDefault();
+//     // setupVideo.stop();
+//     //Update user video variable
+//     var setupVideo = document.querySelector('#setupVideo');
+//     //Set video constrain
+//     var myVideoConstrain = {
+//       audio: false,
+//       video: {width: {max: 200}, height: {max: 250}}
+//     };
+//     addUserMedia(setupVideo, myVideoConstrain);
+//     users.forEach(function(user) {
+//       var videos = document.querySelector('#'+user);
+//       addUserMedia(videos, {
+//         audio: false,
+//         video: {width: 1024}
+//       });
+//
+//     })
+//   })
+// });
+//
+// /*
+// * Add uses media on select video element
+// * @param DomEle video, Object constrain
+// * */
+
+// Logs an action (text) and the time when it happened on the console.
+function trace(text) {
+  text = text.trim();
+  var now = (window.performance.now() / 1000).toFixed(3);
+
+  console.log(now, text);
 }

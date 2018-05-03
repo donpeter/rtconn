@@ -2,3 +2,6 @@
 .idea/libraries/
 .idea/workspace.xml
 */reports
+*.crt
+*.key
+*.csr

@@ -6,26 +6,31 @@
     <h2 class="text-center">Ready to join a chat?</h2>
     <p class="text-center">RTConn is truly simple video chat and screen sharing for groups.</p>
     <div class="animate-bottom mt-5">
+      <div class="alert alert-dismissible alert-danger" id="errorMessage">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> and try submitting again.
+      </div>
       <div class="row">
         <div class="offset-md-2 col-md-4">
-          <video id="myVideoPreview"></video>
+          <video id="setupVideo"></video>
         </div>
         <div class="col-md-3">
           <form action="" method="POST" id="joinCallForm">
             <div class="form-group">
-              <label for="camera"><i class="fa fa-video"></i> Camera:</label>
-              <select name="camera" id="cameras" class="form-control">
-                <option value="">HP TrueVision HD</option>
-                <option value="">None</option>
+              <label for="nickname"><i class="fas fa-user"></i> Your Name:</label>
+              <input type="text" id="nickname" class="form-control" required="required">
+            </div>
+            <div class="form-group">
+              <label for="videoSelect"><i class="fa fa-video"></i> Camera:</label>
+              <select name="videoSelect" id="videoSelect" class="form-control">
               </select>
             </div>
             <div class="form-group">
-              <label for="mic"><i class="fas fa-microphone"></i> Audio:</label>
-              <select name="mics" id="mics" class="form-control">
-                <option value="">Default</option>
-                <option value="">Built-in Audio Analog Stereo</option>
+              <label for="audioSelect"><i class="fas fa-microphone"></i> Audio:</label>
+              <select name="audioSelect" id="audioSelect" class="form-control">
               </select>
             </div>
+
             <div class="form-group">
               <input id="joinCall" type="submit" class="btn btn-primary" value="Join Call">
             </div>
@@ -39,17 +44,18 @@
       <aside class="col-md-2 bl-1">
         <div class="row">
           <div class="col-md-12 m-2">
-            <button href="#" class="btn btn-outline-primary btn-block"><i class="fas fa-link"></i> Invite</button>
+            <button id="" class="btn btn-outline-primary btn-block"><i class="fas fa-link"></i> Invite</button>
           </div>
           <div class="col-md-6">
-            <button href="#" class="btn btn-outline-secondary btn-block"><i class="fas fa-lock"></i> Lock</button>
+            <button id="" class="btn btn-outline-secondary btn-block"><i class="fas fa-lock"></i> Lock</button>
           </div>
           <div class="col-md-6">
-            <button href="#" class="btn btn-outline-danger btn-block mb-3"><i class="fas fa-sign-in-alt"></i> Leave</button>
+            <button id="hangup" class="btn btn-outline-danger btn-block mb-3"><i class="fas fa-sign-in-alt"></i> Leave
+            </button>
           </div>
         </div>
-        <div id="myVideoBox" class="mb-2">
-          <video id="myVideo"></video>
+        <div id="localVideoBox" class="mb-2">
+          <video id="localVideo"></video>
         </div>
         <div id="controls" class="mb-3">
           <button class="btn btn-sm"><i class="fas fa-microphone"></i></button>
@@ -61,7 +67,7 @@
       <div id="usersVideo" class="col-md-10">
         {{#each users}}
           <div class="other-users">
-            <video id="{{this.id}}"></video>
+            <video id="remoteVideo"></video>
           </div>
         {{/each}}
         <button id="openTextChat"role="openTextChat"><i class="fab fa-rocketchat"></i></button>
@@ -96,6 +102,9 @@
 
 {{!-- Embeed custom Scipts to the main.handlebar layout--}}
 {{#contentFor 'pageScripts'}}
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script src="/static/moment/min/moment.min.js"></script>
+
   <script src="/socket.io/socket.io.js"></script>
   <script src="/static/js/chatPage.js"></script>
   <script src="/static/js/socket.js"></script>

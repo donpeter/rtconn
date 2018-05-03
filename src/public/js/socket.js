@@ -1,15 +1,18 @@
+'use strict';
+
 var namespace = getUrlPath().toLowerCase();
 var socket = io();
 var room = namespace + '-room';
+var nickname = $('#nickname');
 $(function() {
-  console.log('New Socket: ', socket.id);
-  socket.emit('join-room', room);
+  callButton.addEventListener('click', joinRoom);
   socket.on('user-join', function(payload) {
-    console.log('New: ', payload);
+    // TODO Peer new user to the chat
+    console.log(payload);
   });
   socket.on('chat-message', chatMessage);
   socket.on('disconnect', function() {
-    console.log('Socket disconneted');
+    // TODO Remove User form Chat
   });
   socket.on('connect', function() {
 
@@ -22,35 +25,44 @@ $(function() {
   });
 });
 
+function joinRoom() {
+  socket.emit('join-room', {room: room, user: nickname.val()});
+}
 function sendMessage(messageInput) {
   var message = messageInput.val().trim();
   if (!message) return;
-  var data = {message: message, room: room, username: socket.id};
+  var payload = {
+    message: message,
+    room: room,
+    socket: socket.id,
+    nickname: nickname.val(),
+  };
   messageInput.val('');
-  socket.emit('chat-message', data);
-  appendSentMessage(message);
+  socket.emit('chat-message', payload);
+  appendSentMessage(payload);
 
 }
 
 function chatMessage(payload) {
-  console.log(payload);
-  if (payload.username == socket.id) {
-    appendSentMessage(payload.message);
+  if (payload.socket == socket.id) {
+    appendSentMessage(payload);
   } else {
-    appendReceivedMessage(payload.message);
+    appendReceivedMessage(payload);
   }
 
 }
 
-function appendSentMessage(mes) {
-  mes = encodeHTML(mes);
+function appendSentMessage(payload) {
+  var date = new Date();
+  payload.message = encodeHTML(payload.message);
   var li = `<li>
             <div class="msj-rta macro">
               <div class="text text-r">
-                <p>${mes} </p><p><small>12:28 PM</small></p>
+                <p>${payload.message} </p>
+                <p class="text-dark"><b>${payload.nickname}</b> <small>${moment().format('LT')}</small></p>
               </div>
               <div class="avatar">
-                <img class="rounded-circle" src="https://a11.t26.net/taringa/avatares/9/1/2/F/7/8/Demon_King1/48x48_5C5.jpg">
+                <img class="rounded-circle" src="${takeScreenshot(localVideo)}">
               </div>
             </div>
           </li>`;
@@ -61,14 +73,15 @@ function appendSentMessage(mes) {
 * Appends new message to the chat box
 * @param String mes
 * */
-function appendReceivedMessage(mes) {
+function appendReceivedMessage(payload) {
   var li = `<li>
             <div class="msj macro">
               <div class="avatar">
                 <img class="rounded-circle" src="https://lh6.googleusercontent.com/-lr2nyjhhjXw/AAAAAAAAAAI/AAAAAAAARmE/MdtfUmC0M4s/photo.jpg?sz=48">
               </div>
               <div class="text text-l">
-                <p>${mes} </p><p><small>12:00 PM</small></p>
+                <p>${payload.message} </p>
+                <p class="text-info"><b>${payload.nickname}</b> <small>${moment().format('LT')}</small></p>
               </div>
             </div>
           </li>`;
@@ -83,7 +96,6 @@ function appendReceivedMessage(mes) {
 * */
 function getUrlPath() {
   var namespace = window.location.pathname.split('/');
-  console.log(namespace);
   return '/' + namespace[namespace.length - 1];
 }
 
@@ -95,3 +107,7 @@ function encodeHTML(str) {
     return '&#' + i.charCodeAt(0) + ';';
   });
 }
+
+nickname.keyup(function() {
+  callButton.disabled = nickname.val().trim().length === 0;
+});

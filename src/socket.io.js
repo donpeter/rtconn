@@ -2,10 +2,15 @@ const io = require('socket.io')();
 const htmlEntities = require('html-entities').AllHtmlEntities;
 
 io.on('connection', function(socket) {
-  io.emit('user-join', 'A new user just join');
-  socket.on('join-room', function(room) {
-    socket.join(room, function() {
+  socket.on('join-room', function(payload) {
+    socket.join(payload.room, function() {
       // console.log('Joined Room', socket.rooms);
+      const message = {
+        user: payload.user,
+        message: 'Joined Room',
+      };
+      socket.to(payload.room).emit('user-join', message);
+
     });
   });
   socket.on('chat-message', function(payload) {

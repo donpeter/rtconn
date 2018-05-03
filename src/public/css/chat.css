@@ -37,7 +37,10 @@
     -moz-box-shadow: 0 -3px 20px 0 #6ed6ff;
     box-shadow: 0 -3px 20px 0 #6ed6ff; }
 
-#myVideoPreview {
+video {
+  max-width: 100%; }
+
+#localVideoBox {
   max-width: 100%;
   max-height: 100%; }
 
@@ -48,7 +51,7 @@
     width: auto;
     height: 100%; }
 
-#myVideoBox #myVideo {
+#localVideoBox #localVideo {
   width: 100%; }
 
 .frame {
@@ -120,6 +123,15 @@
     width: 25%;
     float: left;
     padding-right: 10px; }
+    .frame .avatar img {
+      -webkit-border-radius: 50%;
+      -moz-border-radius: 50%;
+      -ms-border-radius: 50%;
+      -o-border-radius: 50%;
+      -khtml-border-radius: 50%;
+      border-radius: 50%;
+      max-width: 60px;
+      max-height: 60px; }
   .frame .macro {
     margin-top: 5px;
     width: 85%;
