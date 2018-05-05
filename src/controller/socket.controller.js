@@ -7,7 +7,7 @@ const connection = (socket) => {
   });
   socket.on('chat-message', function(payload) {
     // console.log('Chat: ', payload);
-    socket.broadcast.to(payload.room).emit('chat-message', payload.message);
+    socket.broadcast.to(payload.chatRoom).emit('chat-message', payload.message);
   });
   socket.on('disconnect', function() {
   });

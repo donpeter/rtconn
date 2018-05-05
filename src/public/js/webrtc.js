@@ -11,6 +11,18 @@ var setupVideo = document.querySelector('#setupVideo'),
 
 var localStream, remoteStream, setupStream;
 
+// Define and add behavior to buttons.
+
+// Define action buttons.
+const startButton = document.getElementById('startButton');
+const callButton = document.getElementById('joinCall');
+const hangupButton = document.getElementById('hangup');
+
+// Set up initial action buttons status: disable call and hangup.
+callButton.disabled = true;
+hangupButton.disabled = true;
+
+
 //Get video constrain
 function getVideoConstrains(constrain) {
   var constrains = {
@@ -114,6 +126,7 @@ function gotDevices(deviceInfos) {
 //Get local video stream
 function getStream() {
   if (setupStream) {
+
     setupStream.getTracks().forEach(function(track) {
       track.stop();
     });
@@ -281,8 +294,7 @@ function handleConnection(event) {
 // Logs that the connection succeeded.
 function handleConnectionSuccess(peerConnection) {
   trace(`${getPeerName(peerConnection)} addIceCandidate success.`);
-};
-
+}
 // Logs that the connection failed.
 function handleConnectionFailure(peerConnection, error) {
   trace(`${getPeerName(peerConnection)} failed to add ICE Candidate:\n` +
@@ -358,16 +370,6 @@ function createdAnswer(description) {
 }
 
 
-// Define and add behavior to buttons.
-
-// Define action buttons.
-const startButton = document.getElementById('startButton');
-const callButton = document.getElementById('joinCall');
-const hangupButton = document.getElementById('hangup');
-
-// Set up initial action buttons status: disable call and hangup.
-callButton.disabled = true;
-hangupButton.disabled = true;
 
 
 // Handles start button action: creates local MediaStream.
@@ -403,17 +405,17 @@ function callAction() {
     trace(`Using audio device: ${audioTracks[0].label}.`);
   }
 
-  const servers = null;  // Allows for RTC server configuration.
+  // Allows for RTC server configuration.
 
   // Create peer connections and add behavior.
-  localPeerConnection = new RTCPeerConnection(servers);
+  localPeerConnection = new RTCPeerConnection(rtcPeerServer);
   trace('Created local peer connection object localPeerConnection.');
 
   localPeerConnection.addEventListener('icecandidate', handleConnection);
   localPeerConnection.addEventListener(
     'iceconnectionstatechange', handleConnectionChange);
 
-  remotePeerConnection = new RTCPeerConnection(servers);
+  remotePeerConnection = new RTCPeerConnection(rtcPeerServer);
   trace('Created remote peer connection object remotePeerConnection.');
 
   remotePeerConnection.addEventListener('icecandidate', handleConnection);
@@ -505,4 +507,9 @@ function trace(text) {
   var now = (window.performance.now() / 1000).toFixed(3);
 
   console.log(now, text);
+}
+
+
+function initilize() {
+
 }
