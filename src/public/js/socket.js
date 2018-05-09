@@ -109,7 +109,7 @@ function startSignaling() {
   // get a local stream, show it in our video tag and add it to be sent
   var constraints = getVideoConstrains('qvgaConstraints');
   navigator.mediaDevices.getUserMedia(constraints)
-    .then(gotLocalMediaStream).catch(handleLocalMediaStreamError);
+    .then(gotLocalMediaStream).catch(handleError);
 
 }
 
@@ -143,10 +143,6 @@ function gotLocalMediaStream(mediaStream) {
   // callAction(); //Start Calling
 }
 
-// Handles error by logging a message to the console.
-function handleLocalMediaStreamError(error) {
-  console.log(`navigator.getUserMedia error: ${error.toString()}.`);
-}
 
 // Handles remote MediaStream success by adding it as the remoteVideo src.
 function gotRemoteMediaStream(event) {
@@ -159,30 +155,10 @@ function gotRemoteMediaStream(event) {
     // Avoid using this in new browsers, as it is going away.
     remoteVideo.src = window.URL.createObjectURL(mediaStream);
   }
-  remoteStream.onloadedmetadata = function(e) {
+  remoteVideo.onloadedmetadata = function(e) {
     remoteVideo.play();
   };
   console.log('Remote peer connection received remote stream.');
-}
-
-//List out all video and audio devices as options
-function gotDevices(deviceInfos) {
-  for (var i = 0; i !== deviceInfos.length; ++i) {
-    var deviceInfo = deviceInfos[i];
-    var option = document.createElement('option');
-    option.value = deviceInfo.deviceId;
-    if (deviceInfo.kind === 'audioinput') {
-      option.text = deviceInfo.label ||
-        'microphone ' + (audioSelect.length + 1);
-      audioSelect.appendChild(option);
-    } else if (deviceInfo.kind === 'videoinput') {
-      option.text = deviceInfo.label || 'camera ' +
-        (videoSelect.length + 1);
-      videoSelect.appendChild(option);
-    } else {
-      // console.log('Found one other kind of source/device: ', deviceInfo);
-    }
-  }
 }
 
 
@@ -248,7 +224,6 @@ function logError(err) {
   console.log('Errro: ', err);
 }
 function appendSentMessage(payload) {
-  var date = new Date();
   payload.message = encodeHTML(payload.message);
   var li = `<li>
             <div class="msj-rta macro">

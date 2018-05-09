@@ -109,12 +109,7 @@ function gotDevices(deviceInfos) {
 
 //Get local video stream
 function getStream() {
-  if (setupStream) {
-
-    setupStream.getTracks().forEach(function(track) {
-      track.stop();
-    });
-  }
+  stopStream(setupStream);
 
   var constraints = getVideoConstrains('vgaConstraints');
 
@@ -159,3 +154,11 @@ function errorMsg(msg, error) {
 }
 
 
+function stopStream(stream) {
+  if (stream) {
+
+    stream.getTracks().forEach(function(track) {
+      track.stop();
+    });
+  }
+}

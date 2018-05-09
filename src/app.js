@@ -2,10 +2,10 @@ const express = require('express');
 const path = require('path');
 // const favicon = require('serve-favicon');
 const logger = require('morgan');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
-const compress = require('compression');
+// const compress = require('compression');
 const index = require('./routes/index.route');
 
 const users = require('./routes/user.route');
@@ -49,8 +49,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true,
 }));
-app.use(cookieParser());
-app.use(compress());
+// app.use(cookieParser());
+// app.use(compress());
 
 // for sharing this io object throughout the application
 // app.use(function(req, res, next) {

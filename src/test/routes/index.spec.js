@@ -19,14 +19,11 @@ describe('Index Route', function() {
       return request(app).get('/').expect(200);
     });
   });
-  context.skip('GET /test', function() {
-    it('Should return a 200 and include { foo: "foo"} ', function() {
+  context('GET /webrtc', function() {
+    it('Should return a 200', function() {
       return request(app)
-        .get('/test')
-        .expect(200)
-        .then((res) => {
-          return expect(res.body).to.deep.include({foo: 'foo'});
-        });
+        .get('/webrtc')
+        .expect(200);
     });
   });
 });
