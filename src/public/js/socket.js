@@ -10,14 +10,12 @@ var signalRoom = namespace + '-signal-room';
 //Variables
 var localVideo = document.querySelector('#localVideo'),
   remoteVideo = document.querySelector('#remoteVideo'),
-  videoSelect = document.querySelector('#videoSelect'),
-  audioSelect = document.querySelector('#audioSelect'),
   image = document.querySelector('#screenshot');
 
 var localStream, remoteStream;
 var rtcPeerServer = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
 var dataChannelOptions = {
-  ordered: false, //Unrealiable, Not guaranteed to deliver, but faster
+  ordered: true, //Unrealiable, Not guaranteed to deliver, but faster
   maxRetransmitTime: 1000,// Milliseconds
 
 };
@@ -26,15 +24,13 @@ var offerOptions = {
   offerToReceiveVideo: 1,
 };
 
-var localPeerConn;
-var remotePeerConn = [];
-var dataChannel;
+var rtcPeerConn, dataChannel;
+
 
 // Define and add behavior to buttons.
 
 // Define action buttons.
-var callButton = document.getElementById('joinCall');
-var hangupButton = document.getElementById('hangup');
+const callButton = document.getElementById('joinCall');
 
 // Set up initial action buttons status: disable call and hangup.
 callButton.disabled = true;
@@ -42,14 +38,20 @@ callButton.disabled = true;
 $(function() {
   callButton.addEventListener('click', function() {
     joinRoom(chatRoom);
-    start();
+    joinRoom(signalRoom);
+    // get a local stream, show it in our video tag and add it to be sent
+    var constraints = getVideoConstrains('qvgaConstraints');
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(gotLocalMediaStream).catch(handleError);
+    // startSignaling();
+    socket.emit('signal-message', {
+      room: signalRoom,
+      type: 'user_here',
+      message: 'Whats your number?',
+    });
   });
-  socket.emit('join-room', {room: signalRoom});
-  socket.emit('signal-message', {
-    room: signalRoom,
-    type: 'user_here',
-    message: 'Whats your number?',
-  });
+  // socket.emit('join-room', {room: signalRoom});
+
 
 
   socket.on('signal-message', onSignalMessage);
@@ -72,108 +74,60 @@ $(function() {
 //Hnadle Sinaling mesaage
 function onSignalMessage(payload) {
   console.log('Signal received: ' + payload.type);
-  if (!localPeerConn) {
-    // startCall();
+  console.log(payload);
+  if (!rtcPeerConn) {
+    startSignaling();
   }
 
   if (payload.type != 'user_here') {
     var message = JSON.parse(payload.message);
     if (message.sdp) {
-      localPeerConn.setRemoteDescription(new RTCSessionDescription(message.sdp), function() {
+      rtcPeerConn.setRemoteDescription(new RTCSessionDescription(message.sdp), function() {
         // if we received an offer, we need to answer
-        if (localPeerConn.remoteDescription.type == 'offer') {
-          localPeerConn.createAnswer(sendLocalDesc, logError);
+        if (rtcPeerConn.remoteDescription.type == 'offer') {
+          rtcPeerConn.createAnswer(sendLocalDesc, logError);
         }
       }, logError);
     }
     else {
-      remotePeerConn.addIceCandidate(new RTCIceCandidate(message.candidate));
+      rtcPeerConn.addIceCandidate(new RTCIceCandidate(message.candidate));
     }
   }
 }
 
-function start() {
-  trace('Requesting local stream');
-  // get a local stream, show it in our video tag and add it to be sent
-  var constraints = getVideoConstrains('vgaConstraints');
-  navigator.mediaDevices.getUserMedia(constraints)
-    .then(gotLocalMediaStream).catch(handleError);
-}
+function startSignaling() {
+  console.log('Starting Signaling');
+  rtcPeerConn = new RTCPeerConnection(rtcPeerServer);
 
-function startCall() {
-  console.log('Starting Call');
-  callButton.disabled = true;
-  hangupButton.disabled = false;
-  // var videoTracks = localStream.getVideoTracks();
-  // var audioTracks = localStream.getAudioTracks();
-  // if (videoTracks.length > 0) {
-  //   trace('Using video device: ' + videoTracks[0].label);
-  // }
-  // if (audioTracks.length > 0) {
-  //   trace('Using audio device: ' + audioTracks[0].label);
-  // }
-
-
-  localPeerConn = new RTCPeerConnection(rtcPeerServer);
-  remotePeerConn = new RTCPeerConnection(rtcPeerServer);
-
-  dataChannel = localPeerConn.createDataChannel(chatRoom, dataChannelOptions);
+  dataChannel = rtcPeerConn.createDataChannel(chatRoom, dataChannelOptions);
 
   //DataChannel Event Listeners
   dataChannel.onopen = dataChannelStateChange;
-  localPeerConn.ondatachannel = receivedDataChannel;
+  rtcPeerConn.ondatachannel = receivedDataChannel;
 
 
-  // send local ice candidates to the other peer
-  localPeerConn.onicecandidate = function(evt) {
-    // if (evt.candidate) {
-    //   socket.emit('signal-message', {
-    //     'type': 'ice candidate',
-    //     'message': JSON.stringify({'candidate': evt.candidate}),
-    //     'room': signalRoom,
-    //   });
-    // }
-    onIceCandidate(localPeerConn, evt);
+  // send any ice candidates to the other peer
+  rtcPeerConn.onicecandidate = function(evt) {
+    if (evt.candidate) {
+      socket.emit('signal-message', {
+        'type': 'ice candidate',
+        'message': JSON.stringify({'candidate': evt.candidate}),
+        'room': signalRoom,
+      });
+    }
     console.log('completed that ice candidate...');
-  };
-  // send remote ice candidates to the other peer
-  remotePeerConn.onicecandidate = function(evt) {
-    onIceCandidate(remotePeerConn, evt);
-    console.log('completed that ice candidate...');
-  };
-
-  localPeerConn.oniceconnectionstatechange = function(e) {
-    onIceStateChange(localPeerConn, e);
-  };
-  remotePeerConn.oniceconnectionstatechange = function(e) {
-    onIceStateChange(remotePeerConn, e);
   };
 
   // let the 'negotiationneeded' event trigger offer generation
-  // localPeerConn.onnegotiationneeded = function() {
-  //   console.log('on negotiation called');
-  //   localPeerConn.createOffer(sendLocalDesc, logError);
-  // };
+  rtcPeerConn.onnegotiationneeded = function() {
+    console.log('on negotiation called');
+    rtcPeerConn.createOffer(sendLocalDesc, logError);
+  };
 
   // once remote stream arrives, show it in the remote video element
-  // localPeerConn.onaddstream = gotRemoteMediaStream;
+  rtcPeerConn.onaddstream = gotRemoteMediaStream;
+  rtcPeerConn.addStream(localStream);
 
-  remotePeerConn.ontrack = gotRemoteStream;
-
-  localStream.getTracks().forEach(
-    function(track) {
-      localPeerConn.addTrack(
-        track,
-        localStream,
-      );
-    },
-  );
-  trace('Added local stream to localPeerConn');
-
-  trace('localPeerConn createOffer start');
-  localPeerConn.createOffer(offerOptions)
-    .then(onCreateOfferSuccess)
-    .catch(onCreateSessionDescriptionError);
 
 
 }
@@ -200,128 +154,13 @@ function receivedDataChannelMessage(event) {
 }
 
 
-//Handle Ice candidate
-function onIceCandidate(pc, event) {
-  getOtherPc(pc).addIceCandidate(event.candidate)
-    .then(
-      function() {
-        if (event.candidate) {
-          socket.emit('signal-message', {
-            'type': 'ice candidate',
-            'message': JSON.stringify({'candidate': event.candidate}),
-            'room': signalRoom,
-          });
-        }
-        onAddIceCandidateSuccess(pc);
-      },
-      function(err) {
-        onAddIceCandidateError(pc, err);
-      },
-    );
-  trace(getName(pc) + ' ICE candidate: \n' + (event.candidate ?
-    event.candidate.candidate : '(null)'));
-}
-
-function onAddIceCandidateSuccess(pc) {
-  trace(getName(pc) + ' addIceCandidate success');
-}
-
-function onAddIceCandidateError(pc, error) {
-  trace(getName(pc) + ' failed to add ICE Candidate: ' + error.toString());
-}
-
-//Ice State Changed
-function onIceStateChange(pc, event) {
-  if (pc) {
-    trace(getName(pc) + ' ICE state: ' + pc.iceConnectionState);
-    console.log('ICE state change event: ', event);
-  }
-}
-
-
-function onCreateOfferSuccess(desc) {
-  trace('Offer from localPeerConn\n' + desc.sdp);
-  trace('localPeerConn setLocalDescription start');
-  localPeerConn.setLocalDescription(desc).then(
-    function() {
-      onSetLocalSuccess(localPeerConn);
-    },
-    onSetSessionDescriptionError,
-  );
-
-  trace('remotePeerConn setRemoteDescription start');
-  remotePeerConn.setRemoteDescription(desc).then(
-    function() {
-      onSetRemoteSuccess(remotePeerConn);
-    },
-    onSetSessionDescriptionError,
-  );
-  trace('remotePeerConn createAnswer start');
-  // Since the 'remote' side has no media stream we need
-  // to pass in the right constraints in order for it to
-  // accept the incoming offer of audio and video.
-  remotePeerConn.createAnswer().then(
-    onCreateAnswerSuccess,
-    onCreateSessionDescriptionError,
-  );
-}
-
-function onCreateAnswerSuccess(desc) {
-  trace('Answer from remotePeerConn:\n' + desc.sdp);
-  trace('remotePeerConn setLocalDescription start');
-  remotePeerConn.setLocalDescription(desc).then(
-    function() {
-      onSetLocalSuccess(remotePeerConn);
-    },
-    onSetSessionDescriptionError,
-  );
-  trace('localPeerConn setRemoteDescription start');
-  localPeerConn.setRemoteDescription(desc).then(
-    function() {
-      onSetRemoteSuccess(localPeerConn);
-    },
-    onSetSessionDescriptionError,
-  );
-}
-
-//Session offer error handler
-function onCreateSessionDescriptionError(error) {
-  trace('Failed to create session description: ' + error.toString());
-}
-
-function onSetLocalSuccess(pc) {
-  socket.emit('signal-message', {
-    'type': 'SDP',
-    'message': JSON.stringify({'sdp': localPeerConn.localDescription}),
-    'room': signalRoom,
-  });
-  trace(getName(pc) + ' setLocalDescription complete');
-}
-
-function onSetRemoteSuccess(pc) {
-  socket.emit('signal-message', {
-    'type': 'SDP',
-    'message': JSON.stringify({'sdp': remoteVideo.localDescription}),
-    'room': signalRoom,
-  });
-  trace(getName(pc) + ' setRemoteDescription complete');
-}
-
-function onSetSessionDescriptionError(error) {
-  trace('Failed to set session description: ' + error.toString());
-}
-
-
-
-
-
 
 function sendLocalDesc(desc) {
-  localPeerConn.setLocalDescription(desc, function() {
-    console.log('sending local description', desc);
+  rtcPeerConn.setLocalDescription(desc, function() {
+    console.log('sending local description');
     socket.emit('signal-message', {
       'type': 'SDP',
-      'message': JSON.stringify({'sdp': localPeerConn.localDescription}),
+      'message': JSON.stringify({'sdp': rtcPeerConn.localDescription}),
       'room': signalRoom,
     });
   }, logError);
@@ -340,23 +179,16 @@ function gotLocalMediaStream(mediaStream) {
   localVideo.onloadedmetadata = function(e) {
     localVideo.play();
   };
-  startCall();
-  // localPeerConn.addStream(mediaStream);
+  // rtcPeerConn.addStream(mediaStream);
 
   console.log('Received local stream.');
   // callAction(); //Start Calling
 }
 
-function gotRemoteStream(e) {
-  if (remoteVideo.srcObject !== e.streams[0]) {
-    remoteVideo.srcObject = e.streams[0];
-    trace('remotePeerConn received remote stream');
-  }
-}
 
 // Handles remote MediaStream success by adding it as the remoteVideo src.
 function gotRemoteMediaStream(event) {
-  var mediaStream = event.stream;
+  const mediaStream = event.stream;
   remoteStream = mediaStream; // make mediaStream available to console
   // Older browsers may not have srcObject
   if ('srcObject' in remoteStream) {
@@ -371,26 +203,7 @@ function gotRemoteMediaStream(event) {
   console.log('Remote peer connection received remote stream.');
 }
 
-function hangup() {
-  trace('Ending call');
-  localPeerConn.close();
-  remotePeerConn.close();
-  localPeerConn = null;
-  remotePeerConn = null;
-  // hangupButton.disabled = true;
-  // callButton.disabled = false;
-}
 
-
-// Returns one a peer connection, differnt from the one passed
-function getOtherPc(pc) {
-  return (pc === localPeerConn) ? remotePeerConn : localPeerConn;
-}
-
-// Returns peer connection name
-function getName(pc) {
-  return (pc === localPeerConn) ? 'localPeerConn' : 'remotePeerConn';
-}
 //Handles WebRTC error
 function handleError(error) {
   if (error.name === 'ConstraintNotSatisfiedError') {
@@ -452,6 +265,7 @@ function sendMessage(messageInput) {
   appendSentMessage(payload);
 
 }
+
 
 function logError(err) {
   console.log('Errro: ', err);
