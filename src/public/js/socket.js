@@ -10,6 +10,8 @@ var signalRoom = namespace + '-signal-room';
 //Variables
 var localVideo = document.querySelector('#localVideo'),
   remoteVideo = document.querySelector('#remoteVideo'),
+  fileInput = document.getElementById('file-input'),
+  fileProgres = document.querySelector('#file-progress'),
   image = document.querySelector('#screenshot');
 
 var localStream, remoteStream;
@@ -121,12 +123,25 @@ function startSignaling() {
   // let the 'negotiationneeded' event trigger offer generation
   rtcPeerConn.onnegotiationneeded = function() {
     console.log('on negotiation called');
-    rtcPeerConn.createOffer(sendLocalDesc, logError);
+    rtcPeerConn.createOffer(offerOptions)
+      .then(sendLocalDesc)
+      .catch(logError);
   };
 
   // once remote stream arrives, show it in the remote video element
-  rtcPeerConn.onaddstream = gotRemoteMediaStream;
-  rtcPeerConn.addStream(localStream);
+  rtcPeerConn.ontrack = gotRemoteStream;
+
+  localStream.getTracks().forEach(
+    function(track) {
+      rtcPeerConn.addTrack(
+        track,
+        localStream,
+      );
+    },
+  );
+
+  // rtcPeerConn.onaddstream = gotRemoteMediaStream;
+  // rtcPeerConn.addStream(localStream);
 
 
 
@@ -187,22 +202,30 @@ function gotLocalMediaStream(mediaStream) {
 
 
 // Handles remote MediaStream success by adding it as the remoteVideo src.
-function gotRemoteMediaStream(event) {
-  const mediaStream = event.stream;
-  remoteStream = mediaStream; // make mediaStream available to console
-  // Older browsers may not have srcObject
-  if ('srcObject' in remoteStream) {
-    remoteVideo.srcObject = mediaStream;
-  } else {
-    // Avoid using this in new browsers, as it is going away.
-    remoteVideo.src = window.URL.createObjectURL(mediaStream);
+// function gotRemoteMediaStream(event) {
+//   const mediaStream = event.stream;
+//   remoteStream = mediaStream; // make mediaStream available to console
+//   // Older browsers may not have srcObject
+//   if ('srcObject' in remoteStream) {
+//     remoteVideo.srcObject = mediaStream;
+//   } else {
+//     // Avoid using this in new browsers, as it is going away.
+//     remoteVideo.src = window.URL.createObjectURL(mediaStream);
+//   }
+//   remoteVideo.onloadedmetadata = function(e) {
+//     remoteVideo.play();
+//   };
+//   console.log('Remote peer connection received remote stream.');
+// }
+function gotRemoteStream(e) {
+  if (remoteVideo.srcObject !== e.streams[0]) {
+    remoteVideo.srcObject = e.streams[0];
+    remoteVideo.onloadedmetadata = function(e) {
+      remoteVideo.play();
+    };
+    trace('pc2 received remote stream');
   }
-  remoteVideo.onloadedmetadata = function(e) {
-    remoteVideo.play();
-  };
-  console.log('Remote peer connection received remote stream.');
 }
-
 
 //Handles WebRTC error
 function handleError(error) {
@@ -279,7 +302,7 @@ function appendSentMessage(payload) {
                 <p class="text-dark"><b>${payload.nickname}</b> <small>${moment().format('LT')}</small></p>
               </div>
               <div class="avatar">
-                <img class="rounded-circle" src="${takeScreenshot(localVideo)}">
+                <img src="${takeScreenshot(localVideo)}">
               </div>
             </div>
           </li>`;
@@ -294,7 +317,7 @@ function appendReceivedMessage(payload) {
   var li = `<li>
             <div class="msj macro">
               <div class="avatar">
-                <img class="rounded-circle" src="https://lh6.googleusercontent.com/-lr2nyjhhjXw/AAAAAAAAAAI/AAAAAAAARmE/MdtfUmC0M4s/photo.jpg?sz=48">
+                <img src="https://lh6.googleusercontent.com/-lr2nyjhhjXw/AAAAAAAAAAI/AAAAAAAARmE/MdtfUmC0M4s/photo.jpg?sz=48">
               </div>
               <div class="text text-l">
                 <p>${payload.message} </p>

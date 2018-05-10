@@ -78,16 +78,25 @@
           <button id="closeTextChat" type="button" class="close" role="closeTextChat">&times;</button>
         </div>
         <ul id="messages"></ul>
-        <div class="mb-2">
+        <div class="mb-2 message-input-area">
           <form method="post" id="textChatForm">
-            <div class="msj-rta macro">
-              <div class="text text-r" style="background:whitesmoke !important">
-                <input name="chat" class="mytext" placeholder="Type a message" autocomplete="off"/>
-              </div>
+            <div id="text-message">
+              <input name="chat" class="mytext chat-input" placeholder="Type a message" autocomplete="off"/>
+              <i class="fas fa-file icon" id="shareFile"></i>
 
             </div>
-            <div>
-              <button type="submit"><i class="fas fa-share share"></i></button>
+            <div id="file-transfer">
+              <div class="progress" id="file-progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"
+                     style="width:30%">
+                  70%
+                </div>
+              </div>
+              <input type="file" class="file-input" id="file-input"/>
+              <i class="fas fa-share icon" id="sendFile"></i>
+              <i class="fas fa-times-circle close-icon" id="closeFile"></i>
+
+
             </div>
           </form>
         </div>

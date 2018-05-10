@@ -74,11 +74,65 @@ video {
     -o-border-radius: 50%;
     -khtml-border-radius: 50%;
     border-radius: 50%; }
-  .frame > div:last-of-type {
+
+.frame .message-input-area {
     position: absolute;
     bottom: 0;
-    width: 100%;
-    display: flex; }
+  padding: 5px;
+  width: 100%;
+}
+
+.frame .message-input-area .chat-input {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  -khtml-border-radius: 10px;
+  border-radius: 10px;
+  width: 90%;
+  height: 35px;
+  padding: 5px;
+  background-color: whitesmoke;
+}
+
+.frame .message-input-area .icon {
+  width: 25px;
+  height: 25px;
+  color: #f8f9fa;
+  cursor: pointer;
+}
+
+.frame .message-input-area .icon:hover {
+  position: relative;
+  top: 2px;
+  color: #c2c2c2;
+}
+
+.frame .message-input-area #file-transfer .file-input {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  -khtml-border-radius: 10px;
+  border-radius: 10px;
+  width: 78%;
+  height: 35px;
+  padding: 5px;
+}
+
+.frame .message-input-area #file-transfer .close-icon {
+  width: 25px;
+  height: 25px;
+  color: #dc3545;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.frame .message-input-area #file-transfer .close-icon:hover {
+  position: relative;
+  top: 2px;
+  color: #921925;
+}
   .frame .text {
     width: 75%;
     display: flex;
@@ -94,10 +148,6 @@ video {
       margin-top: 0;
       margin-bottom: auto;
       line-height: 13px; }
-    .frame .text .mytext {
-      border: 0;
-      padding: 10px;
-      background: whitesmoke; }
   .frame .text-l {
     float: left;
     padding-right: 10px; }
@@ -130,8 +180,9 @@ video {
       -o-border-radius: 50%;
       -khtml-border-radius: 50%;
       border-radius: 50%;
-      max-width: 60px;
-      max-height: 60px; }
+      width: 48px;
+      height: 48px;
+    }
   .frame .macro {
     margin-top: 5px;
     width: 85%;
@@ -166,7 +217,8 @@ video {
       position: relative;
       border-style: solid;
       border-width: 0 13px 13px 0;
-      border-color: transparent #ffffff transparent transparent; }
+      border-color: transparent whitesmoke transparent transparent;
+    }
   .frame input:focus {
     outline: none; }
   .frame ::-webkit-input-placeholder {

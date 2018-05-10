@@ -1,4 +1,7 @@
+var fileTranfer;
+
 $(function() {
+  fileTranfer = $('#file-transfer');
   setTimeout(showSetupPage, 1000); //Used to simulated WebRTC setup delay
   $('#joinCallForm').submit(function(e) {
     e.preventDefault();
@@ -6,10 +9,24 @@ $(function() {
   });
   $('#openTextChat').click(toggleTextChat);
   $('#closeTextChat').click(toggleTextChat);
+  fileTranfer.hide();
+  $('#shareFile').click(showFileTransfer);
+  $('#closeFile').click(showTextMesage);
 
 
 });
 
+function showFileTransfer() {
+  fileTranfer.show();
+  $('#text-message').hide();
+  $('.progress').hide();
+}
+
+function showTextMesage() {
+  fileTranfer.hide();
+  $('#text-message').show();
+  $('.progress').hide();
+}
 /*
 * This function show the Setup page
 * Which is the page where users select and setup webcam that will be used
@@ -61,6 +78,6 @@ function closeTextChat() {
 * Opens/Close the Chat box for text massaging
 * */
 function toggleTextChat() {
-   $('[role="textChatBox"]').is( ":hidden" ) ? openTextChat() : closeTextChat();
+  $('[role="textChatBox"]').is( ":hidden" ) ? openTextChat() : closeTextChat();
 }
 
