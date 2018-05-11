@@ -29,8 +29,8 @@ io.on('connection', (socket) => {
       fileName: payload.fileName,
       fileSize: payload.fileSize,
     };
-    console, log(payload);
-    socket, to(payload.room).emit('file-transfer', fileMeta);
+    // console.log(payload);
+    socket.to(payload.room).emit('file-transfer', fileMeta);
   });
 
   socket.on('disconnect', () => {
