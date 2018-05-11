@@ -23,6 +23,16 @@ io.on('connection', (socket) => {
     payload.message = htmlEntities.encode(payload.message);
     socket.to(payload.room).emit('chat-message', payload);
   });
+  socket.on('file-transfer', (payload) => {
+    const fileMeta = {
+      user: payload.user,
+      fileName: payload.fileName,
+      fileSize: payload.fileSize,
+    };
+    console, log(payload);
+    socket, to(payload.room).emit('file-transfer', fileMeta);
+  });
+
   socket.on('disconnect', () => {
     // console.log('User disconnected');
   });

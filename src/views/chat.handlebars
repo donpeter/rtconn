@@ -65,11 +65,9 @@
         <div id="active-users"></div>
       </aside>
       <div id="usersVideo" class="col-md-10">
-        {{#each users}}
-          <div class="other-users">
-            <video id="remoteVideo"></video>
-          </div>
-        {{/each}}
+        <div class="other-users">
+          <video id="remoteVideo" autoplay></video>
+        </div>
         <button id="openTextChat"role="openTextChat"><i class="fab fa-rocketchat"></i></button>
 
       </div>
@@ -92,8 +90,8 @@
                   70%
                 </div>
               </div>
-              <input type="file" class="file-input" id="file-input"/>
-              <i class="fas fa-share icon" id="sendFile"></i>
+              <input type="file" class="file-input" id="fileInput"/>
+              <a class="fas fa-share icon" id="sendFile"></a>
               <i class="fas fa-times-circle close-icon" id="closeFile"></i>
 
 

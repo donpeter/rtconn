@@ -5,13 +5,15 @@ var socket = io();
 var chatRoom = namespace + '-room';
 var nickname = $('#nickname');
 var signalRoom = namespace + '-signal-room';
+var fileRoom = namespace + '-file-room';
 
 
 //Variables
 var localVideo = document.querySelector('#localVideo'),
   remoteVideo = document.querySelector('#remoteVideo'),
-  fileInput = document.getElementById('file-input'),
+  fileInput = document.getElementById('fileInput'),
   fileProgres = document.querySelector('#file-progress'),
+  sendFile = $('#sendFile'),
   image = document.querySelector('#screenshot');
 
 var localStream, remoteStream;
@@ -33,16 +35,18 @@ var rtcPeerConn, dataChannel;
 
 // Define action buttons.
 const callButton = document.getElementById('joinCall');
-
 // Set up initial action buttons status: disable call and hangup.
 callButton.disabled = true;
-
 $(function() {
+
   callButton.addEventListener('click', function() {
     joinRoom(chatRoom);
     joinRoom(signalRoom);
+    joinRoom(fileRoom);
     // get a local stream, show it in our video tag and add it to be sent
-    var constraints = getVideoConstrains('qvgaConstraints');
+    var constraints = getVideoConstrains('vgaConstraints');
+    sendFile.click(sendFileMeta);
+
     navigator.mediaDevices.getUserMedia(constraints)
       .then(gotLocalMediaStream).catch(handleError);
     // startSignaling();
@@ -55,7 +59,7 @@ $(function() {
   // socket.emit('join-room', {room: signalRoom});
 
 
-
+  socket.on('file-transfer', onFileTransfer);
   socket.on('signal-message', onSignalMessage);
   socket.on('user-join', function(payload) {
     // TODO Peer new user to the chat
@@ -168,6 +172,21 @@ function receivedDataChannelMessage(event) {
   appendReceivedMessage(JSON.parse(event.data));
 }
 
+function sendFileMeta() {
+  trace('Sending File');
+  var file = {
+    room: fileRoom,
+    fileName: 'Test',
+    fileSize: 300,
+  };
+
+  socket.emit('file-transfer', file);
+
+}
+
+function onFileTransfer(file) {
+  console.log(file);
+}
 
 
 function sendLocalDesc(desc) {
