@@ -28,6 +28,7 @@ io.on('connection', (socket) => {
       nickname: payload.nickname,
       fileName: payload.fileName,
       fileSize: payload.fileSize,
+      fileType: payload.fileType,
     };
     // console.log(payload);
     socket.to(payload.room).emit('file-transfer', fileMeta);

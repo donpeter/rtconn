@@ -9,12 +9,12 @@ var fileRoom = namespace + '-file-room';
 
 
 //Variables
-var localVideo = document.querySelector('#localVideo'),
-  remoteVideo = document.querySelector('#remoteVideo'),
+var localVideo = document.getElementById('localVideo'),
+  remoteVideo = document.getElementById('remoteVideo'),
   fileInput = document.getElementById('fileInput'),
-  fileProgres = document.querySelector('#file-progress'),
-  sendFile = $('#sendFile'),
-  image = document.querySelector('#screenshot');
+  fileProgress = $('#file-progress .progress-bar'),
+  sendFile = document.getElementById('sendFile'),
+  image = document.getElementById('screenshot');
 
 var localStream, remoteStream;
 var rtcPeerServer = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
@@ -27,6 +27,9 @@ var offerOptions = {
   offerToReceiveAudio: 1,
   offerToReceiveVideo: 1,
 };
+var fileMeta = {},
+  fileBuffer = [],
+  fileSize = 0;
 
 var rtcPeerConn, dataChannel;
 
@@ -71,7 +74,7 @@ function startCall() {
   joinRoom(fileRoom);
   // get a local stream, show it in our video tag and add it to be sent
   var constraints = getVideoConstrains('vgaConstraints');
-  sendFile.click(sendFileMeta);
+  sendFile.addEventListener('click', sendFileMeta);
 
   navigator.mediaDevices.getUserMedia(constraints)
     .then(gotLocalMediaStream).catch(handleError);
@@ -173,24 +176,80 @@ function receivedDataChannel(event) {
 
 function receivedDataChannelMessage(event) {
   trace('Received message via DataChannel');
-  console.log(event.data);
-  appendReceivedMessage(JSON.parse(event.data));
+  try {
+    appendReceivedMessage(JSON.parse(event.data));
+  } catch (e) {
+    //This is where we process incoming files
+    fileBuffer.push(event.data);
+    fileSize += event.data.byteLength;
+    // fileProgress.value = fileSize;
+
+    //Provide link to downloadable file when complete
+    if (fileSize === fileMeta.fileSize) {
+      var received = new window.Blob(fileBuffer);
+      fileBuffer = [];
+      var downloadLink = document.createElement('a');
+      downloadLink.href = URL.createObjectURL(received);
+      downloadLink.download = fileMeta.fileName;
+      downloadLink.appendChild(document.createTextNode(fileMeta.fileName + '(' + fileSize + ') bytes'));
+      $('#messages').append(downloadLink);
+      fileSize = 0;
+    }
+  }
+
+
+
 }
 
 function sendFileMeta() {
-  trace('Sending File');
-  var file = {
-    room: fileRoom,
-    fileName: 'Test',
-    fileSize: 300,
-  };
-
-  socket.emit('file-transfer', file);
+  var file = fileInput.files[0];
+  sendFileChannel(file, dataChannel);
 
 }
 
-function onFileTransfer(file) {
-  console.log(file);
+function sendFileChannel(file, dataChannel, chunkSize = 16348, progress) {
+  if (!file) {
+    return;
+  }
+  fileMeta = {
+    room: fileRoom,
+    nickname: nickname.val(),
+    fileName: file.name,
+    fileSize: file.size,
+    fileType: file.type,
+  };
+  socket.emit('file-transfer', fileMeta);
+
+  progress = progress || fileProgress;
+  progress.css('width', '0%');
+  progress.show();
+
+  // progress.attr('aria-valuemax', file.size);
+  var sliceFile = function(offset) {
+    var reader = new window.FileReader();
+    reader.onload = (function() {
+      return function(e) {
+        dataChannel.send(e.target.result);
+        if (file.size > offset + e.target.result.byteLength) {
+          window.setTimeout(sliceFile, 0, offset + chunkSize);
+        }
+        var currentVal = (offset + e.target.result.byteLength) / file.size * 100;
+        progress.attr('aria-valuenow', currentVal);
+        progress.text(currentVal + '%');
+        progress.css('width', currentVal + '%');
+      };
+    })(file);
+    var slice = file.slice(offset, offset + chunkSize);
+    reader.readAsArrayBuffer(slice);
+  };
+  sliceFile(0);
+
+
+}
+
+function onFileTransfer(payload) {
+  fileMeta = payload;
+  console.log('Incomming File ', fileMeta);
 }
 
 

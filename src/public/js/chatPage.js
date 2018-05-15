@@ -31,13 +31,13 @@ $(function() {
 function showFileTransfer() {
   fileTranfer.show();
   $('#text-message').hide();
-  $('.progress').hide();
+  $('.progress-bar').hide();
 }
 
 function showTextMesage() {
   fileTranfer.hide();
   $('#text-message').show();
-  $('.progress').hide();
+  $('.progress-bar').hide();
 }
 /*
 * This function show the Setup page
