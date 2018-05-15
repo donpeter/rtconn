@@ -93,7 +93,7 @@ if (navigator.mediaDevices.getUserMedia === undefined) {
 }
 
 /*
-* Get user devices list
+* Get nickname devices list
 * */
 navigator.mediaDevices.enumerateDevices()
   .then(gotDevices).then(getStream).catch(handleError);
@@ -166,7 +166,7 @@ function handleError(error) {
   errorMsg('getUserMedia error: ' + error.name, error);
 }
 
-//Displays All error to user
+//Displays All error to nickname
 function errorMsg(msg, error) {
   errorMessage.innerHTML += '<p>' + msg + '</p>';
   if (typeof error !== 'undefined') {
@@ -477,7 +477,7 @@ function getPeerName(peerConnection) {
 //   $('#joinCallForm').submit(function(e) {
 //     e.preventDefault();
 //     // setupVideo.stop();
-//     //Update user video variable
+//     //Update nickname video variable
 //     var setupVideo = document.querySelector('#setupVideo');
 //     //Set video constrain
 //     var myVideoConstrain = {
@@ -485,8 +485,8 @@ function getPeerName(peerConnection) {
 //       video: {width: {max: 200}, height: {max: 250}}
 //     };
 //     addUserMedia(setupVideo, myVideoConstrain);
-//     users.forEach(function(user) {
-//       var videos = document.querySelector('#'+user);
+//     users.forEach(function(nickname) {
+//       var videos = document.querySelector('#'+nickname);
 //       addUserMedia(videos, {
 //         audio: false,
 //         video: {width: 1024}

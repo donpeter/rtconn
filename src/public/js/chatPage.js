@@ -1,7 +1,19 @@
 var fileTranfer;
-
 $(function() {
   fileTranfer = $('#file-transfer');
+  var invite = $('#invite');
+
+  invite.click(function() {
+    copyToClipboard(window.location.href);
+    invite.attr('title', 'Invite URL Copied');
+    invite.tooltip('enable');
+    invite.tooltip('show');
+    setTimeout(function() {
+      invite.tooltip('disable');
+      invite.attr('title', '');
+    }, 2000); //Disabele Tooltip after 2s
+    // alert('Copied');
+  });
   setTimeout(showSetupPage, 1000); //Used to simulated WebRTC setup delay
   $('#joinCallForm').submit(function(e) {
     e.preventDefault();
@@ -81,3 +93,16 @@ function toggleTextChat() {
   $('[role="textChatBox"]').is( ":hidden" ) ? openTextChat() : closeTextChat();
 }
 
+/*
+* Copies string to the clipboard*/
+function copyToClipboard(str) {
+  const el = document.createElement('textarea');
+  el.value = str;
+  el.setAttribute('readonly', '');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+}

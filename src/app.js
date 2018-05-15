@@ -58,7 +58,7 @@ app.use(bodyParser.urlencoded({
 //   next();
 // });
 app.use('/', index);
-app.use('/users', users);
+// app.use('/users', users);
 app.use('/chat', chat);
 app.use('/static', static);
 

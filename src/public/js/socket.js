@@ -34,37 +34,26 @@ var rtcPeerConn, dataChannel;
 // Define and add behavior to buttons.
 
 // Define action buttons.
-const callButton = document.getElementById('joinCall');
+var callButton = document.getElementById('joinCall');
+var hangupButton = document.getElementById('hangup');
 // Set up initial action buttons status: disable call and hangup.
 callButton.disabled = true;
+
+
 $(function() {
 
-  callButton.addEventListener('click', function() {
-    joinRoom(chatRoom);
-    joinRoom(signalRoom);
-    joinRoom(fileRoom);
-    // get a local stream, show it in our video tag and add it to be sent
-    var constraints = getVideoConstrains('vgaConstraints');
-    sendFile.click(sendFileMeta);
-
-    navigator.mediaDevices.getUserMedia(constraints)
-      .then(gotLocalMediaStream).catch(handleError);
-    // startSignaling();
-    socket.emit('signal-message', {
-      room: signalRoom,
-      type: 'user_here',
-      message: 'Whats your number?',
-    });
-  });
+  callButton.addEventListener('click', startCall);
+  hangupButton.addEventListener('click', hangup);
   // socket.emit('join-room', {room: signalRoom});
 
 
   socket.on('file-transfer', onFileTransfer);
   socket.on('signal-message', onSignalMessage);
-  socket.on('user-join', function(payload) {
-    // TODO Peer new user to the chat
-  }); //Handle new user joining the chat room
+  socket.on('nickname-join', function(payload) {
+    // TODO Peer new nickname to the chat
+  }); //Handle new nickname joining the chat room
   socket.on('chat-message', chatMessage); // Handele new chat-message event
+  socket.on('call_ended', onHangup);
   socket.on('disconnect', function() {
     // TODO Remove User form Chat
   });
@@ -76,7 +65,23 @@ $(function() {
   });
 });
 
+function startCall() {
+  joinRoom(chatRoom);
+  joinRoom(signalRoom);
+  joinRoom(fileRoom);
+  // get a local stream, show it in our video tag and add it to be sent
+  var constraints = getVideoConstrains('vgaConstraints');
+  sendFile.click(sendFileMeta);
 
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then(gotLocalMediaStream).catch(handleError);
+  // startSignaling();
+  socket.emit('signal-message', {
+    room: signalRoom,
+    type: 'user_here',
+    message: 'Are you availiable for call?',
+  });
+}
 //Hnadle Sinaling mesaage
 function onSignalMessage(payload) {
   console.log('Signal received: ' + payload.type);
@@ -246,6 +251,29 @@ function gotRemoteStream(e) {
   }
 }
 
+function hangup() {
+  hangupButton.disabled = true;
+  trace('Ending call');
+  rtcPeerConn.close();
+  rtcPeerConn = null;
+  socket.emit('call_ended', {
+    room: signalRoom,
+    socket: socket.id,
+    nickname: nickname.val(),
+  });
+
+  socket.disconnect();
+}
+
+function onHangup(payload) { //Handle the hangup event
+  alert(payload.nickname + ' Has Hangup');
+  hangupButton.disabled = true;
+  rtcPeerConn.close();
+  rtcPeerConn = null;
+  socket.disconnect();
+
+}
+
 //Handles WebRTC error
 function handleError(error) {
   if (error.name === 'ConstraintNotSatisfiedError') {
@@ -265,7 +293,7 @@ function handleError(error) {
 * */
 function takeScreenshot(video, width, height) {
   video = video || localVideo; //Sets localVideo as default value
-  const canvas = document.createElement('canvas');
+  var canvas = document.createElement('canvas');
   canvas.width = width || video.videoWidth;
   canvas.height = height || video.videoHeight;
   canvas.getContext('2d').drawImage(video, 0, 0);
@@ -277,7 +305,7 @@ function takeScreenshot(video, width, height) {
 //Joins the socket to the rooms
 function joinRoom(room) {
   console.log('ReQ Join', room);
-  socket.emit('join-room', {room: room, user: nickname.val()});
+  socket.emit('join-room', {room: room, nickname: nickname.val()});
 }
 
 function chatMessage(payload) {

@@ -12,7 +12,7 @@ const index = (req, res) => {
   // const nsp =res.io;
   /*
   nsp.on('connection', function(socket) {
-    nsp.emit('user-join', 'A new user just join');
+    nsp.emit('user-join', 'A new nickname just join');
     socket.on('join-room', function(room) {
       socket.join(room, function() {
         console.log(socket.rooms);
