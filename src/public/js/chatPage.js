@@ -106,3 +106,12 @@ function copyToClipboard(str) {
   document.execCommand('copy');
   document.body.removeChild(el);
 }
+
+/*
+* Display a dismissible error to the page*/
+function displayError(err) {
+  var errorDiv = $('errorMessages');
+  if (errorDivr) {
+    errorDiv.append('<p>' + msg + '</p>');
+  }
+}

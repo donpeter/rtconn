@@ -1,11 +1,11 @@
 'use strict';
 
 //Variables
-var setupVideo = document.querySelector('#setupVideo'),
-  videoSelect = document.querySelector('#videoSelect'),
-  audioSelect = document.querySelector('#audioSelect'),
-  image = document.querySelector('#screenshot'),
-  errorMessage = document.querySelector('#errorMessage');
+var setupVideo = document.getElementById('setupVideo'),
+  videoSelect = document.getElementById('videoSelect'),
+  audioSelect = document.getElementById('audioSelect'),
+  image = document.getElementById('screenshot'),
+  errorMessage = document.getElementById('errorMessages');
 
 var setupStream;
 

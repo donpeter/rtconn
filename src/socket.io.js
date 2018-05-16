@@ -2,7 +2,6 @@ const io = require('socket.io')();
 const htmlEntities = require('html-entities').AllHtmlEntities;
 
 io.on('connection', (socket) => {
-
   socket.on('join-room', (payload) => {
     // socket.join(payload.signalRoom); //Join the Signaling  messages room
     socket.join(payload.room, () => {
