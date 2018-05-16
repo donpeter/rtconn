@@ -34,8 +34,8 @@ function getVideoConstrains(constrain) {
         height: {ideal: 480},
         deviceId: {exact: videoSelect.value},
       },
-      audio: false,
-      // audio: {deviceId: {exact: audioSelect.value}},
+      // audio: false,
+      audio: {deviceId: {exact: audioSelect.value}},
     },
     qvgaConstraints: {
       video: {
@@ -43,8 +43,8 @@ function getVideoConstrains(constrain) {
         height: {exact: 240},
         deviceId: {exact: videoSelect.value},
       },
-      audio: false,
-      // audio: {deviceId: {exact: audioSelect.value}},
+      // audio: false,
+      audio: {deviceId: {exact: audioSelect.value}},
     },
   };
   return constrains[constrain];
