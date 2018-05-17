@@ -218,8 +218,12 @@ function receivedDataChannelMessage(event) {
 
 function sendFileMeta() {
   var file = fileInput.files[0];
-  sendFileChannel(file, dataChannel);
-  fileInput.value = null;// Reset input
+  if (file) {
+    sendFileChannel(file, dataChannel);
+    fileInput.value = null;// Reset input
+    showTextMesage();
+  }
+
 
 }
 

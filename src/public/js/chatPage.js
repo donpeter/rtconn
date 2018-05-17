@@ -47,6 +47,7 @@ function showSetupPage() {
   $('#loader').hide();
   $('#before-join').show();
   $('#after-join').hide();
+  $('#nickname').focus();
 }
 
 /*
@@ -72,6 +73,7 @@ function openTextChat() {
     .removeClass('col-md-10');
   $('#openTextChat').hide(speed);
   $('[role="textChatBox"]').show(speed);
+  $('input[name="chat"]').focus();
 }
 
 /*
