@@ -68,7 +68,8 @@ function showTextChatPage() {
 * */
 function openTextChat() {
   var speed= 500;
-  $('#usersVideo').toggleClass('col-md-7 col-md-10');
+  $('#usersVideo').addClass('col-md-7')
+    .removeClass('col-md-10');
   $('#openTextChat').hide(speed);
   $('[role="textChatBox"]').show(speed);
 }
@@ -81,7 +82,9 @@ function closeTextChat() {
   // $('#usersVideo').toggleClass('col-md-7 col-md-10');
   $('#openTextChat').show(speed);
   $('[role="textChatBox"]').slideUp(speed, function(){
-    $('#usersVideo').toggleClass('col-md-7 col-md-10')
+
+    $('#usersVideo').addClass('col-md-10')
+      .removeClass('col-md-7');
   });
 
 }

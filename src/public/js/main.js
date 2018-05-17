@@ -17,7 +17,24 @@ var localVideo = document.getElementById('localVideo'),
   image = document.getElementById('screenshot');
 
 var localStream, remoteStream;
-var rtcPeerServer = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
+var rtcPeerServer = {
+  iceServers: [
+    {urls: 'stun:numb.viagenie.ca'},
+    {urls: 'stun:stun.ekiga.net'},
+    {urls: 'stun:stun.voipbuster.com'},
+    {urls: 'stun:stun.l.google.com:19302'},
+    {
+      urls: 'turn:numb.viagenie.ca',
+      'credential': 'Freshboy1!',
+      'username': 'patunalu@yahoo.com',
+    },
+    // {
+    //   'urls': 'turn:192.158.29.39:3478?transport=tcp',
+    //   'credential': 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+    //   'username': '28224511:1379330808'
+    // }
+  ],
+};
 var dataChannelOptions = {
   ordered: true, //Unrealiable, Not guaranteed to deliver, but faster
   maxRetransmitTime: 1000,// Milliseconds
@@ -72,22 +89,23 @@ function startCall() {
   joinRoom(chatRoom);
   joinRoom(signalRoom);
   joinRoom(fileRoom);
-  // get a local stream, show it in our video tag and add it to be sent
-  var constraints = getVideoConstrains('vgaConstraints');
-  sendFile.addEventListener('click', sendFileMeta);
   stopStream(setupStream);
+  // get a local stream, show it in our video tag and add it to be sent
+  var constraints = getVideoConstrains('hdConstraints');
   navigator.mediaDevices.getUserMedia(constraints)
     .then(gotLocalMediaStream).catch(handleError);
   // startSignaling();
   socket.emit('signal-message', {
     room: signalRoom,
     type: 'user_here',
-    message: 'Are you availiable for call?',
+    message: 'Are you available for call?',
   });
+
+  sendFile.addEventListener('click', sendFileMeta);
 }
 //Hnadle Sinaling mesaage
 function onSignalMessage(payload) {
-  console.log('Signal received: ' + payload.type);
+  trace('Signal received: ' + payload.type);
   console.log(payload);
   if (!rtcPeerConn) {
     startSignaling();
@@ -109,8 +127,9 @@ function onSignalMessage(payload) {
   }
 }
 
+
 function startSignaling() {
-  console.log('Starting Signaling');
+  trace('Starting Signaling');
   rtcPeerConn = new RTCPeerConnection(rtcPeerServer);
 
   dataChannel = rtcPeerConn.createDataChannel(chatRoom, dataChannelOptions);
@@ -142,17 +161,12 @@ function startSignaling() {
 
   // once remote stream arrives, show it in the remote video element
   rtcPeerConn.ontrack = gotRemoteStream;
-
-  localStream.getTracks().forEach(
-    function(track) {
-      rtcPeerConn.addTrack(
-        track,
-        localStream,
-      );
-    },
-  );
-
-  // rtcPeerConn.onaddstream = gotRemoteMediaStream;
+  if (localStream) {
+    addLocalStream();
+  } else {
+    setTimeout(addLocalStream, 1000);
+  } // Retry adding the local stream to the peer object after 1s
+    // rtcPeerConn.onaddstream = gotRemoteMediaStream;
   // rtcPeerConn.addStream(localStream);
 
 
@@ -270,9 +284,21 @@ function sendLocalDesc(desc) {
   }, logError);
 }
 
+/*
+* Adds the LocalStream track to the rtcPeerConn*/
+function addLocalStream() {
+  localStream.getTracks().forEach(
+    function(track) {
+      rtcPeerConn.addTrack(
+        track,
+        localStream,
+      );
+    },
+  );
+}
 // Sets the MediaStream as the video element src.
 function gotLocalMediaStream(mediaStream) {
-  localStream = mediaStream; // make mediaStream available to console
+  window.localStream = mediaStream; // make mediaStream available to console
   // Older browsers may not have srcObject
   if ('srcObject' in localVideo) {
     localVideo.srcObject = mediaStream;
@@ -285,7 +311,7 @@ function gotLocalMediaStream(mediaStream) {
   };
   // rtcPeerConn.addStream(mediaStream);
 
-  console.log('Received local stream.');
+  trace('Received local stream.');
   // callAction(); //Start Calling
 }
 
@@ -312,10 +338,10 @@ function gotRemoteStream(e) {
     remoteStream = e.streams[0]; // make mediaStream available to console
     // Older browsers may not have srcObject
     if ('srcObject' in remoteVideo) {
-      remoteVideo.srcObject = remoteStream;
+      remoteVideo.srcObject = e.streams[0];
     } else {
       // Avoid using this in new browsers, as it is going away.
-      remoteVideo.src = window.URL.createObjectURL(remoteStream);
+      remoteVideo.src = window.URL.createObjectURL(e.streams[0]);
     }
     remoteVideo.onloadedmetadata = function(e) {
       remoteVideo.play();
