@@ -75,7 +75,7 @@ function startCall() {
   // get a local stream, show it in our video tag and add it to be sent
   var constraints = getVideoConstrains('vgaConstraints');
   sendFile.addEventListener('click', sendFileMeta);
-
+  stopStream(setupStream);
   navigator.mediaDevices.getUserMedia(constraints)
     .then(gotLocalMediaStream).catch(handleError);
   // startSignaling();
@@ -178,22 +178,23 @@ function receivedDataChannelMessage(event) {
   trace('Received message via DataChannel');
   try {
     appendReceivedMessage(JSON.parse(event.data));
+    openTextChat(); //Open the chat box
+
   } catch (e) {
     //This is where we process incoming files
     fileBuffer.push(event.data);
     fileSize += event.data.byteLength;
-    // fileProgress.value = fileSize;
 
     //Provide link to downloadable file when complete
     if (fileSize === fileMeta.fileSize) {
       var received = new window.Blob(fileBuffer);
       fileBuffer = [];
-      var downloadLink = document.createElement('a');
-      downloadLink.href = URL.createObjectURL(received);
-      downloadLink.download = fileMeta.fileName;
-      downloadLink.appendChild(document.createTextNode(fileMeta.fileName + '(' + fileSize + ') bytes'));
-      $('#messages').append(downloadLink);
+      fileMeta.url = URL.createObjectURL(received);
+      // $('#messages').append(downloadLink);
       fileSize = 0;
+
+      appendReceivedFile(fileMeta);
+      openTextChat(); //Open the chat box
     }
   }
 
@@ -204,6 +205,7 @@ function receivedDataChannelMessage(event) {
 function sendFileMeta() {
   var file = fileInput.files[0];
   sendFileChannel(file, dataChannel);
+  fileInput.value = null;// Reset input
 
 }
 
@@ -220,11 +222,13 @@ function sendFileChannel(file, dataChannel, chunkSize = 16348, progress) {
   };
   socket.emit('file-transfer', fileMeta);
 
+  //Show file progress bar
   progress = progress || fileProgress;
   progress.css('width', '0%');
   progress.show();
-
   // progress.attr('aria-valuemax', file.size);
+
+  //Slice the file into chunks of 16kb
   var sliceFile = function(offset) {
     var reader = new window.FileReader();
     reader.onload = (function() {
@@ -234,6 +238,8 @@ function sendFileChannel(file, dataChannel, chunkSize = 16348, progress) {
           window.setTimeout(sliceFile, 0, offset + chunkSize);
         }
         var currentVal = (offset + e.target.result.byteLength) / file.size * 100;
+
+        //Update progress bar
         progress.attr('aria-valuenow', currentVal);
         progress.text(currentVal + '%');
         progress.css('width', currentVal + '%');
@@ -243,13 +249,13 @@ function sendFileChannel(file, dataChannel, chunkSize = 16348, progress) {
     reader.readAsArrayBuffer(slice);
   };
   sliceFile(0);
-
+  fileMeta.url = URL.createObjectURL(file);
+  appendSentFile(fileMeta);
 
 }
 
 function onFileTransfer(payload) {
   fileMeta = payload;
-  console.log('Incomming File ', fileMeta);
 }
 
 
@@ -301,12 +307,20 @@ function gotLocalMediaStream(mediaStream) {
 //   console.log('Remote peer connection received remote stream.');
 // }
 function gotRemoteStream(e) {
+
   if (remoteVideo.srcObject !== e.streams[0]) {
-    remoteVideo.srcObject = e.streams[0];
+    remoteStream = e.streams[0]; // make mediaStream available to console
+    // Older browsers may not have srcObject
+    if ('srcObject' in remoteVideo) {
+      remoteVideo.srcObject = remoteStream;
+    } else {
+      // Avoid using this in new browsers, as it is going away.
+      remoteVideo.src = window.URL.createObjectURL(remoteStream);
+    }
     remoteVideo.onloadedmetadata = function(e) {
       remoteVideo.play();
     };
-    trace('pc2 received remote stream');
+    trace('Recieved peer remote stream');
   }
 }
 
@@ -428,6 +442,40 @@ function appendReceivedMessage(payload) {
               <div class="text text-l">
                 <p>${payload.message} </p>
                 <p class="text-info"><b>${payload.nickname}</b> <small>${moment().format('LT')}</small></p>
+              </div>
+            </div>
+          </li>`;
+  $('#messages').append(li);
+}
+
+/*
+* Appends new income file to the chat box
+* @param String mes
+* */
+function appendReceivedFile(file) {
+  var li = `<li>
+            <div class="msj macro">
+              <div class="avatar">
+                <img src="https://lh6.googleusercontent.com/-lr2nyjhhjXw/AAAAAAAAAAI/AAAAAAAARmE/MdtfUmC0M4s/photo.jpg?sz=48">
+              </div>
+              <div class="text text-l">
+                <a href="${file.url}" download="${file.fileName}" target="_blank">${file.fileName} <i class="fas fa-download"></i></a>
+                <p class="text-info"><b>${file.nickname}</b> <small>${moment().format('LT')}</small></p>
+              </div>
+            </div>
+          </li>`;
+  $('#messages').append(li);
+}
+
+function appendSentFile(file) {
+  var li = `<li>
+            <div class="msj-rta macro">
+              <div class="text text-r">
+                <a href="${file.url}" download="${file.fileName}" target="_blank">${file.fileName} <i class="fas fa-download"></i></a>
+                <p class="text-dark"><b>${file.nickname}</b> <small>${moment().format('LT')}</small></p>
+              </div>
+              <div class="avatar">
+                <img src="${takeScreenshot(localVideo)}">
               </div>
             </div>
           </li>`;

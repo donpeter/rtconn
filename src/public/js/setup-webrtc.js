@@ -14,16 +14,16 @@ function getVideoConstrains(constrain) {
   var constrains = {
     fullHdConstraints: {
       video: {
-        width: {exact: 1920},
-        height: {exact: 1080},
+        width: {ideal: 1920},
+        height: {ideal: 1080},
         deviceId: {exact: videoSelect.value},
       },
       audio: {deviceId: {exact: audioSelect.value}},
     },
     hdConstraints: {
       video: {
-        width: {min: 1280},
-        height: {min: 720},
+        width: {ideal: 1280},
+        height: {ideal: 720},
         deviceId: {exact: videoSelect.value},
       },
       audio: {deviceId: {exact: audioSelect.value}},
@@ -39,8 +39,8 @@ function getVideoConstrains(constrain) {
     },
     qvgaConstraints: {
       video: {
-        width: {exact: 320},
-        height: {exact: 240},
+        width: {ideal: 320},
+        height: {ideal: 240},
         deviceId: {exact: videoSelect.value},
       },
       // audio: false,
