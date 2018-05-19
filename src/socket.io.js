@@ -35,6 +35,9 @@ io.on('connection', (socket) => {
   socket.on('call_ended', (payload) => {
     socket.to(payload.room).emit('call_ended', payload);
   });
+  socket.on('screen_sharing', (payload) => {
+    socket.to(payload.room).emit('screen_sharing', payload);
+  });
 
   socket.on('disconnect', () => {
     // console.log('User disconnected');

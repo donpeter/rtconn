@@ -16,7 +16,7 @@
       ]
     }
   ],
-  "description": "RTConn screensharing is an extension to enable screensharing using WebRTC. built by Don Peter C. Atunalu",
+  "description": "RTConn screen sharing is an extension to enable screen sharing using WebRTC. built by Don Peter C. Atunalu",
   "homepage_url": "https://rtconn.tk/",
   "icons": {
     "128": "icon128.png",

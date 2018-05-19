@@ -76,6 +76,10 @@ $(function() {
   }); //Handle new nickname joining the chat room
   socket.on('chat-message', chatMessage); // Handele new chat-message event
   socket.on('call_ended', onHangup);
+  socket.on('screen_sharing', function(payload) {
+    //Remove mirror effect on screen sharing
+    remoteVideo.classList.add('scrensharing');
+  });
   socket.on('disconnect', function() {
     // TODO Remove User form Chat
   });
@@ -95,7 +99,7 @@ function startCall() {
   // get a local stream, show it in our video tag and add it to be sent
   var constraints = getVideoConstrains('hdConstraints');
   navigator.mediaDevices.getUserMedia(constraints)
-    .then(gotLocalMediaStream).catch(handleError);
+    .then(gotLocalMediaStream).catch(handleGetUserMediaError);
   // startSignaling();
   socket.emit('signal-message', {
     room: signalRoom,
@@ -366,11 +370,16 @@ function startScreenSharing() {
       } else {
         // console.log('got a stream', stream);
         // localStream = stream;
-        // localVideo.src = URL.createObjectURL(stream);
+        // localVideo.src = URL.createObjectURL(st
         gotLocalMediaStream(stream);
+        stream.onremovetrack = function() {
+          // get a local stream, show it in our video tag and add it to be sent
+          var constraints = getVideoConstrains('hdConstraints');
+          navigator.mediaDevices.getUserMedia(constraints)
+            .then(gotLocalMediaStream).catch(handleGetUserMediaError);
+        };
         addLocalStream();
-        //Remove mirror effect on screen sharing
-        remoteVideo.classList.add('scrensharing');
+        socket.emit('screen_sharing', {room: chatRoom, socket: socket.id});
       }
     });
 }
@@ -399,7 +408,7 @@ function onHangup(payload) { //Handle the hangup event
 }
 
 //Handles WebRTC error
-function handleError(error) {
+function handleGetUserMediaError(error) {
   if (error.name === 'ConstraintNotSatisfiedError') {
     console.log('The resolution ' + constraints.video.width.exact + 'x' +
       constraints.video.width.exact + ' px is not supported by your device.');
