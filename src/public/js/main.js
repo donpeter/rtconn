@@ -360,16 +360,16 @@ function gotRemoteStream(e) {
 // Screen Sharing function
 
 function startScreenSharing() {
-  window.setTimeout(function() {
     getScreenMedia(function(err, stream) {
       if (err) {
         console.log('failed: ' + err);
       } else {
-        console.log('got a stream', stream);
-        someScreen.src = URL.createObjectURL(stream);
+        // console.log('got a stream', stream);
+        localStream = stream;
+        localVideo.src = URL.createObjectURL(stream);
       }
     });
-  }, 500);
+}
 };
 
 function hangup() {
