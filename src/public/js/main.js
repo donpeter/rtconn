@@ -370,7 +370,6 @@ function startScreenSharing() {
       }
     });
 }
-};
 
 function hangup() {
   hangupButton.disabled = true;
