@@ -42,6 +42,7 @@
 video {
   max-width: 100%;
   max-height: 100%;
+  @include transformX(-1);
 }
 
 #localVideoBox {
@@ -64,9 +65,14 @@ video {
   }
 }
 
+.scrensharing {
+  @include transformX(1);
+}
 #localVideoBox {
   #localVideo {
     width: 100%;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
   }
 }
 .frame{

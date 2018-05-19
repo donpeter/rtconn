@@ -6,7 +6,6 @@
   display: -webkit-flex;
   display: flex;
 }
-
 @mixin flex($values) {
   -webkit-box-flex: $values;
   -moz-box-flex: $values;
@@ -14,7 +13,6 @@
   -ms-flex: $values;
   flex: $values;
 }
-
 @mixin flexorder($val) {
   -webkit-box-ordinal-group: $val;
   -moz-box-ordinal-group: $val;
@@ -22,6 +20,7 @@
   -webkit-order: $val;
   order: $val;
 }
+
 //*************BORDER****************//
 @mixin border-radius($val) {
   -webkit-border-radius: $val;
@@ -37,6 +36,8 @@
   -moz-box-shadow:$top $left $blur $color #{$inset};
   box-shadow:$top $left $blur $color #{$inset};
 }
+
+//*************TRANSITION****************//
 @mixin transition($transition...) {
   -moz-transition:    $transition;
   -o-transition:      $transition;
@@ -55,3 +56,13 @@
   -webkit-transition-property: $duration;
   transition-property:         $duration;
 }
+
+@mixin transformX($val) {
+  -webkit-transform: scaleX($val);
+  -moz-transform: scaleX($val);
+  -ms-transform: scaleX($val);
+  -o-transform: scaleX($val);
+  transform: scaleX($val);
+}
+
+//*************GENERAL****************//

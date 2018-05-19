@@ -307,15 +307,15 @@ function gotLocalMediaStream(mediaStream) {
   window.localStream = mediaStream; // make mediaStream available to console
   // Older browsers may not have srcObject
   if ('srcObject' in localVideo) {
-    localVideo.srcObject = mediaStream;
+    localVideo.srcObject = window.localStream;
   } else {
     // Avoid using this in new browsers, as it is going away.
-    localVideo.src = window.URL.createObjectURL(mediaStream);
+    localVideo.src = window.URL.createObjectURL(window.localStream);
   }
   localVideo.onloadedmetadata = function(e) {
     localVideo.play();
   };
-  // rtcPeerConn.addStream(mediaStream);
+  // rtcPeerConn.addStream(window.localStream);
 
   trace('Received local stream.');
   // callAction(); //Start Calling
@@ -360,7 +360,7 @@ function gotRemoteStream(e) {
 // Screen Sharing function
 
 function startScreenSharing() {
-    getScreenMedia(function(err, stream) {
+  getScreenMedia(function(err, stream) {
       if (err) {
         console.log('failed: ' + err);
       } else {
@@ -369,6 +369,8 @@ function startScreenSharing() {
         // localVideo.src = URL.createObjectURL(stream);
         gotLocalMediaStream(stream);
         addLocalStream();
+        //Remove mirror effect on screen sharing
+        remoteVideo.classList.add('scrensharing');
       }
     });
 }
