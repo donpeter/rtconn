@@ -372,11 +372,12 @@ function startScreenSharing() {
         // localStream = stream;
         // localVideo.src = URL.createObjectURL(st
         gotLocalMediaStream(stream);
-        stream.onremovetrack = function() {
+        stream.oninactive = function() {
           // get a local stream, show it in our video tag and add it to be sent
           var constraints = getVideoConstrains('hdConstraints');
           navigator.mediaDevices.getUserMedia(constraints)
             .then(gotLocalMediaStream).catch(handleGetUserMediaError);
+          addLocalStream();
         };
         addLocalStream();
         socket.emit('screen_sharing', {room: chatRoom, socket: socket.id});
