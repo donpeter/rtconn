@@ -62,7 +62,8 @@
         <div id="controls" class="mb-3">
           <button class="btn btn-sm"><i class="fas fa-microphone"></i></button>
           <button class="btn btn-sm"><i class="fas fa-video"></i></button>
-          <button class="btn btn-sm d-none d-md-inline"><i class="fas fa-desktop"></i> Screen share</button>
+          <button class="btn btn-sm d-none d-md-inline" id="screenSharing"><i class="fas fa-desktop"></i> Screen share
+          </button>
         </div>
         <div id="active-users"></div>
       </aside>
@@ -114,6 +115,7 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="/static/js/chatPage.js"></script>
   <script src="/static/js/setup-webrtc.js"></script>
+  <script src="/static/js/screensharing.js"></script>
   <script src="/static/js/main.js"></script>
 {{/contentFor}}
 

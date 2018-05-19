@@ -56,6 +56,7 @@ var rtcPeerConn, dataChannel;
 // Define action buttons.
 var callButton = document.getElementById('joinCall');
 var hangupButton = document.getElementById('hangup');
+var screenSharingButton = document.getElementById('screenSharing');
 // Set up initial action buttons status: disable call and hangup.
 callButton.disabled = true;
 
@@ -64,6 +65,7 @@ $(function() {
 
   callButton.addEventListener('click', startCall);
   hangupButton.addEventListener('click', hangup);
+  screenSharingButton.addEventListener('click', startScreenSharing);
   // socket.emit('join-room', {room: signalRoom});
 
 
@@ -353,6 +355,22 @@ function gotRemoteStream(e) {
     trace('Recieved peer remote stream');
   }
 }
+
+
+// Screen Sharing function
+
+function startScreenSharing() {
+  window.setTimeout(function() {
+    getScreenMedia(function(err, stream) {
+      if (err) {
+        console.log('failed: ' + err);
+      } else {
+        console.log('got a stream', stream);
+        someScreen.src = URL.createObjectURL(stream);
+      }
+    });
+  }, 500);
+};
 
 function hangup() {
   hangupButton.disabled = true;
