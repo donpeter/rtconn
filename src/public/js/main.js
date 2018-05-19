@@ -365,8 +365,10 @@ function startScreenSharing() {
         console.log('failed: ' + err);
       } else {
         // console.log('got a stream', stream);
-        localStream = stream;
-        localVideo.src = URL.createObjectURL(stream);
+        // localStream = stream;
+        // localVideo.src = URL.createObjectURL(stream);
+        gotLocalMediaStream(stream);
+        addLocalStream();
       }
     });
 }
