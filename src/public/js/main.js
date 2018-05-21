@@ -364,6 +364,14 @@ function gotRemoteStream(e) {
 // Screen Sharing function
 
 function startScreenSharing() {
+  if (chrome.app.isInstalled) {
+    screenSharingButton.disabled = true;
+  } else {
+    var appUrl = 'eeimecdjjjhialcmahcmibnhlnjklibd';
+    return chrome.webstore.install(appUrl, startScreenSharing);
+  }
+
+
   getScreenMedia(function(err, stream) {
       if (err) {
         console.log('failed: ' + err);
@@ -373,6 +381,7 @@ function startScreenSharing() {
         // localVideo.src = URL.createObjectURL(st
         gotLocalMediaStream(stream);
         stream.oninactive = function() {
+          screenSharingButton.disabled = false;
           // get a local stream, show it in our video tag and add it to be sent
           var constraints = getVideoConstrains('hdConstraints');
           navigator.mediaDevices.getUserMedia(constraints)
