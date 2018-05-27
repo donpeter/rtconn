@@ -4672,3 +4672,7 @@ nav ul li a.nav-link {
 .box-200 {
   height: 200px;
   background: #333; }
+
+video {
+  background: url("../img/no-video.svg") no-repeat center center;
+}

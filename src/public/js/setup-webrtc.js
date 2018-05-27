@@ -8,6 +8,9 @@ var setupVideo = document.getElementById('setupVideo'),
 
 var setupStream, videoQuality = 'autoConstraints';
 var videoQualityBtn = $('.vQuality');
+var sendAudio = true, sendVideo = true;
+var toggleVideo = $('#toggleVideo'),
+  toggleAudio = $('#toggleAudio');
 
 //Get video constrain
 function getVideoConstrains(constrain) {
@@ -49,21 +52,36 @@ function getVideoConstrains(constrain) {
       // audio: false,
       audio: {deviceId: {exact: audioSelect.value}},
     },
-    videoOnlu: {
-      video: {deviceId: {exact: videoSelect.value}},
-      audio: false,
-    },
-    audioOnly: {
-      video: false,
-      // audio: false,
-      audio: {deviceId: {exact: audioSelect.value}},
-    },
   };
-  return constrains[constrain];
+
+  var c = constrains[constrain];
+  !sendAudio ? c.audio = false : null;
+  !sendVideo ? c.video = false : null;
+  console.log('Constrain', c);
+  return c;
 }
 
 $(function() {
   videoQualityBtn.click(setVideoQuality);
+
+  toggleAudio.click(function() {
+    sendAudio = !sendAudio;
+    toggleAudio.toggleClass('btn-danger btn-info ');
+
+    toggleVideo.attr('disabled', !sendAudio);
+    // toggleAudio.attr('disabled', false);
+    //Update the RTC stream
+    updateRTCStream();
+  });
+  toggleVideo.click(function() {
+    sendVideo = !sendVideo;
+    toggleVideo.toggleClass('btn-danger btn-info ');
+
+    // toggleVideo.attr('disabled', false);
+    toggleAudio.attr('disabled', !sendVideo);
+
+    updateRTCStream();
+  });
 });
 
 // Older browsers might not implement mediaDevices at all, so we set an empty object first

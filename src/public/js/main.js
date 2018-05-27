@@ -48,6 +48,7 @@ var fileMeta = {},
   fileBuffer = [],
   fileSize = 0;
 
+
 var rtcPeerConn, dataChannel, sender;
 
 
@@ -309,9 +310,17 @@ function changeVideoQuality(e) {
   //Set videoQuality
   videoQuality = e.target.getAttribute('quality');
 
-  getLocalStream();
-  //Get New stream
-  // addLocalStream();
+  updateRTCStream();
+
+}
+
+
+//Change Update Remote Stream
+function updateRTCStream() {
+  // get a local stream, show it in our video tag and add it to be sent
+  var constraints = getVideoConstrains(videoQuality);
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then(gotLocalMediaStream).then(addLocalStream).catch(handleGetUserMediaError);
 }
 
 //Get local stream
@@ -328,6 +337,7 @@ function addLocalStream() {
   //   rtcPeerConn.removeTrack(sender);
   //   sender = null;
   // }
+  trace('Adding local stream');
   localStream.getTracks().forEach(
     function(track) {
       sender = rtcPeerConn.addTrack(
@@ -410,7 +420,6 @@ function startScreenSharing() {
         var constraints = getVideoConstrains(videoQuality);
         navigator.mediaDevices.getUserMedia(constraints)
           .then(gotLocalMediaStream).then(addLocalStream).catch(handleGetUserMediaError);
-        a;
       };
       addLocalStream();
       socket.emit('screen_sharing', {room: chatRoom, socket: socket.id});
