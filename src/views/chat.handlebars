@@ -6,13 +6,24 @@
     <h2 class="text-center">Ready to join a chat?</h2>
     <p class="text-center">RTConn is truly simple video chat and screen sharing for groups.</p>
     <div class="animate-bottom mt-5">
-      <div class="alert alert-dismissible alert-danger" id="errorMessage" style="display: none;">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <!--<strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> and try submitting again.-->
+      <div class="alert alert-dismissible alert-danger" id="errorMessages" style="display: none;">
+        <button type="button" class="close" id="closeError">&times;</button>
+        <strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> and try again.
+        <div id="errors"></div>
       </div>
       <div class="row">
+        <div class="col-md-12 mb-2 text-center">
+          <button class="btn btn-secondary vQuality" quality="autoConstraints">Auto</button>
+          <button class="btn btn-info vQuality" quality="fullHdConstraints">Full HD (1920×1080)</button>
+          <button class="btn btn-info vQuality" quality="hdConstraints">HD (1280×720)</button>
+          <button class="btn btn-info vQuality" quality="vgaConstraints">VGA (640x480)</button>
+          <button class="btn btn-info vQuality" quality="qvgaConstraints">QVGA (320x240)</button>
+        </div>
+      </div>
+      <div class="row">
+
         <div class="offset-md-2 col-md-4">
-          <video id="setupVideo"></video>
+          <video id="setupVideo" muted></video>
         </div>
         <div class="col-md-3">
           <form action="" method="POST" id="joinCallForm">
@@ -64,6 +75,15 @@
           <button class="btn btn-sm"><i class="fas fa-video"></i></button>
           <button class="btn btn-sm d-none d-md-inline" id="screenSharing"><i class="fas fa-desktop"></i> Screen share
           </button>
+        </div>
+
+        <div class="mb-2 ">
+          <h5>Change Quality</h5>
+          <button class="btn btn-block btn-secondary vQuality" quality="autoConstraints">Auto</button>
+          <button class="btn btn-block btn-info vQuality" quality="fullHdConstraints">Full HD</button>
+          <button class="btn btn-block btn-info vQuality" quality="hdConstraints">HD</button>
+          <button class="btn btn-block btn-info vQuality" quality="vgaConstraints">VGA</button>
+          <button class="btn btn-block btn-info vQuality" quality="qvgaConstraints">QVGA</button>
         </div>
         <div id="active-users"></div>
       </aside>

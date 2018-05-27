@@ -4,45 +4,57 @@
 var setupVideo = document.getElementById('setupVideo'),
   videoSelect = document.getElementById('videoSelect'),
   audioSelect = document.getElementById('audioSelect'),
-  image = document.getElementById('screenshot'),
-  errorMessage = document.getElementById('errorMessages');
+  image = document.getElementById('screenshot');
 
-var setupStream;
+var setupStream, videoQuality = 'autoConstraints';
+var videoQualityBtn = $('.vQuality');
 
 //Get video constrain
 function getVideoConstrains(constrain) {
   var constrains = {
+    autoConstraints: {
+      video: {deviceId: {exact: videoSelect.value}},
+      audio: {deviceId: {exact: audioSelect.value}},
+    },
     fullHdConstraints: {
       video: {
-        width: {ideal: 1920},
-        height: {ideal: 1080},
+        width: {exact: 1920},
+        height: {exact: 1080},
         deviceId: {exact: videoSelect.value},
       },
       audio: {deviceId: {exact: audioSelect.value}},
     },
     hdConstraints: {
       video: {
-        width: {ideal: 1280},
-        height: {ideal: 720},
+        width: {exact: 1280},
+        height: {exact: 720},
         deviceId: {exact: videoSelect.value},
       },
       audio: {deviceId: {exact: audioSelect.value}},
     },
     vgaConstraints: {
       video: {
-        width: {ideal: 640},
-        height: {ideal: 480},
+        width: {exact: 640},
+        height: {exact: 480},
+        deviceId: {exact: videoSelect.value},
+      },
+      audio: {deviceId: {exact: audioSelect.value}},
+    },
+    qvgaConstraints: {
+      video: {
+        width: {exact: 320},
+        height: {exact: 240},
         deviceId: {exact: videoSelect.value},
       },
       // audio: false,
       audio: {deviceId: {exact: audioSelect.value}},
     },
-    qvgaConstraints: {
-      video: {
-        width: {ideal: 320},
-        height: {ideal: 240},
-        deviceId: {exact: videoSelect.value},
-      },
+    videoOnlu: {
+      video: {deviceId: {exact: videoSelect.value}},
+      audio: false,
+    },
+    audioOnly: {
+      video: false,
       // audio: false,
       audio: {deviceId: {exact: audioSelect.value}},
     },
@@ -50,6 +62,9 @@ function getVideoConstrains(constrain) {
   return constrains[constrain];
 }
 
+$(function() {
+  videoQualityBtn.click(setVideoQuality);
+});
 
 // Older browsers might not implement mediaDevices at all, so we set an empty object first
 if (navigator.mediaDevices === undefined) {
@@ -109,11 +124,9 @@ function gotDevices(deviceInfos) {
 
 //Get local video stream
 function getStream() {
+  //Stop Previous Steam
   stopStream(setupStream);
-
-  var constraints = getVideoConstrains('vgaConstraints');
-
-
+  var constraints = getVideoConstrains(videoQuality);
   navigator.mediaDevices.getUserMedia(constraints).then(gotStream).catch(handleGetUserMediaError);
 }
 
@@ -134,6 +147,7 @@ function gotStream(stream) {
 
 //Handles WebRTC error
 function handleGetUserMediaError(error) {
+  console.log('################');
   if (error.name === 'ConstraintNotSatisfiedError') {
     errorMsg('The resolution ' + constraints.video.width.exact + 'x' +
       constraints.video.width.exact + ' px is not supported by your device.');
@@ -147,12 +161,30 @@ function handleGetUserMediaError(error) {
 
 //Displays All error to user
 function errorMsg(msg, error) {
-  errorMessage.innerHTML += '<p>' + msg + '</p>';
+  errorMessage.show();
+  errors.append('<p>' + msg + '</p>');
   if (typeof error !== 'undefined') {
     console.error(error);
   }
 }
 
+function setVideoQuality(e) {
+  //Change style of selected element
+  videoQualityBtn.removeClass('btn-secondary');
+  videoQualityBtn.addClass('btn-info');
+  e.target.classList.remove('btn-info');
+  e.target.classList.add('btn-secondary');
+
+  //Disable selected button
+  videoQualityBtn.removeAttr('disabled');
+  e.target.setAttribute('disabled', 'true');
+
+  //Set videoQuality
+  videoQuality = e.target.getAttribute('quality');
+
+  //Get New stream
+  getStream();
+}
 
 function stopStream(stream) {
   if (stream) {

@@ -1,3 +1,6 @@
+var errorMessage = $('#errorMessages');
+var closeError = $('#closeError');
+var errors = $('#errors');
 var fileTranfer;
 $(function() {
   fileTranfer = $('#file-transfer');
@@ -14,6 +17,8 @@ $(function() {
     }, 2000); //Disabele Tooltip after 2s
     // alert('Copied');
   });
+
+  closeError.click(clearError);
   setTimeout(showSetupPage, 1000); //Used to simulated WebRTC setup delay
   $('#joinCallForm').submit(function(e) {
     e.preventDefault();
@@ -119,4 +124,10 @@ function displayError(err) {
   if (errorDivr) {
     errorDiv.append('<p>' + msg + '</p>');
   }
+}
+
+
+function clearError() {
+  errors.html('');
+  errorMessage.hide();
 }

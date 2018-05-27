@@ -2,7 +2,7 @@
 
 var namespace = getUrlPath().toLowerCase();
 var socket = io();
-var chatRoom = namespace + '-room';
+var chatRoom = namespace + '-chat-room';
 var nickname = $('#nickname');
 var signalRoom = namespace + '-signal-room';
 var fileRoom = namespace + '-file-room';
@@ -48,7 +48,7 @@ var fileMeta = {},
   fileBuffer = [],
   fileSize = 0;
 
-var rtcPeerConn, dataChannel;
+var rtcPeerConn, dataChannel, sender;
 
 
 // Define and add behavior to buttons.
@@ -96,10 +96,10 @@ function startCall() {
   joinRoom(signalRoom);
   joinRoom(fileRoom);
   stopStream(setupStream);
-  // get a local stream, show it in our video tag and add it to be sent
-  var constraints = getVideoConstrains('hdConstraints');
-  navigator.mediaDevices.getUserMedia(constraints)
-    .then(gotLocalMediaStream).catch(handleGetUserMediaError);
+
+  videoQualityBtn.click(changeVideoQuality);
+  getLocalStream();
+
   // startSignaling();
   socket.emit('signal-message', {
     room: signalRoom,
@@ -294,12 +294,43 @@ function sendLocalDesc(desc) {
   }, logError);
 }
 
+//set
+function changeVideoQuality(e) {
+  //Change style of selected element
+  videoQualityBtn.removeClass('btn-secondary');
+  videoQualityBtn.addClass('btn-info');
+  e.target.classList.remove('btn-info');
+  e.target.classList.add('btn-secondary');
+
+  //Disable selected button
+  videoQualityBtn.removeAttr('disabled');
+  e.target.setAttribute('disabled', 'true');
+
+  //Set videoQuality
+  videoQuality = e.target.getAttribute('quality');
+
+  getLocalStream();
+  //Get New stream
+  // addLocalStream();
+}
+
+//Get local stream
+function getLocalStream() {
+  // get a local stream, show it in our video tag and add it to be sent
+  var constraints = getVideoConstrains(videoQuality);
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then(gotLocalMediaStream).catch(handleGetUserMediaError);
+}
 /*
 * Adds the LocalStream track to the rtcPeerConn*/
 function addLocalStream() {
+  // if( sender){
+  //   rtcPeerConn.removeTrack(sender);
+  //   sender = null;
+  // }
   localStream.getTracks().forEach(
     function(track) {
-      rtcPeerConn.addTrack(
+      sender = rtcPeerConn.addTrack(
         track,
         localStream,
       );
@@ -364,34 +395,38 @@ function gotRemoteStream(e) {
 // Screen Sharing function
 
 function startScreenSharing() {
-  if (chrome.app.isInstalled) {
-    screenSharingButton.disabled = true;
-  } else {
-    var appUrl = 'eeimecdjjjhialcmahcmibnhlnjklibd';
-    return chrome.webstore.install(appUrl, startScreenSharing);
-  }
-
-
-  getScreenMedia(function(err, stream) {
-      if (err) {
-        console.log('failed: ' + err);
-      } else {
-        // console.log('got a stream', stream);
-        // localStream = stream;
-        // localVideo.src = URL.createObjectURL(st
-        gotLocalMediaStream(stream);
-        stream.oninactive = function() {
-          screenSharingButton.disabled = false;
-          // get a local stream, show it in our video tag and add it to be sent
-          var constraints = getVideoConstrains('hdConstraints');
-          navigator.mediaDevices.getUserMedia(constraints)
-            .then(gotLocalMediaStream).then(addLocalStream).catch(handleGetUserMediaError);
-          a;
-        };
-        addLocalStream();
-        socket.emit('screen_sharing', {room: chatRoom, socket: socket.id});
-      }
-    });
+  screenSharingButton.disabled = true;
+  navigator.mediaDevices.getUserMedia({
+    audio: false,
+    video: {
+      mandatory: {
+        chromeMediaSource: 'screen',
+        maxWidth: 1280,
+        maxHeight: 720,
+      },
+      optional: [],
+    },
+  }).then(gotLocalMediaStream).then(addLocalStream).catch(handleGetUserMediaError);
+  // getScreenMedia(function(err, stream) {
+  //     if (err) {
+  //       console.log('failed: ' + err);
+  //     } else {
+  //       // console.log('got a stream', stream);
+  //       // localStream = stream;
+  //       // localVideo.src = URL.createObjectURL(st
+  //       gotLocalMediaStream(stream);
+  //       stream.oninactive = function() {
+  //         screenSharingButton.disabled = false;
+  //         // get a local stream, show it in our video tag and add it to be sent
+  //         var constraints = getVideoConstrains(videoQuality);
+  //         navigator.mediaDevices.getUserMedia(constraints)
+  //           .then(gotLocalMediaStream).then(addLocalStream).catch(handleGetUserMediaError);
+  //         a;
+  //       };
+  //       addLocalStream();
+  //       socket.emit('screen_sharing', {room: chatRoom, socket: socket.id});
+  //     }
+  //   });
 }
 
 function hangup() {
@@ -417,18 +452,6 @@ function onHangup(payload) { //Handle the hangup event
 
 }
 
-//Handles WebRTC error
-function handleGetUserMediaError(error) {
-  if (error.name === 'ConstraintNotSatisfiedError') {
-    console.log('The resolution ' + constraints.video.width.exact + 'x' +
-      constraints.video.width.exact + ' px is not supported by your device.');
-  } else if (error.name === 'PermissionDeniedError') {
-    console.log('Permissions have not been granted to use your camera and ' +
-      'microphone, you need to allow the page access to your devices in ' +
-      'order for the demo to work.');
-  }
-  console.log('getUserMedia error: ' + error.name, error);
-}
 
 /*
 * Take Screenshot of the video stream
