@@ -1,5 +1,4 @@
 #after-join aside {
-  height: 100vh;
   border-right: 1px solid #6c757d; }
 
 #openTextChat {
@@ -48,13 +47,12 @@ video {
 
 #localVideoBox {
   max-width: 100%;
-  max-height: 100%; }
+  max-height: 100px; }
 
 #usersVideo .other-users video {
   margin: 0 !important;
   padding: 0 !important;
   width: 100%;
-  height: 99%;
   max-height: 99vh; }
 
 .scrensharing {
@@ -71,8 +69,9 @@ video {
 
 .frame {
   background: rgba(0, 153, 214, 0.7);
+  min-height: 250px;
   overflow: hidden;
-  padding: 0; }
+  padding: 5px 0; }
   .frame .close {
     color: whitesmoke;
     font-size: 1.5em;
@@ -155,7 +154,7 @@ video {
   .frame .text-r {
     float: right;
     padding-left: 10px; }
-  .frame ul {
+  .frame #messages {
     width: 100%;
     list-style-type: none;
     padding: 10px;
@@ -163,8 +162,9 @@ video {
     bottom: 47px;
     display: flex;
     flex-direction: column;
-    top: 30px; }
-    .frame ul li {
+    top: 30px;
+    overflow-y: scroll; }
+    .frame #messages li {
       width: 100%;
       margin: 5px 0; }
   .frame .avatar {
