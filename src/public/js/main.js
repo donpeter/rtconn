@@ -530,6 +530,19 @@ function appendSentMessage(payload) {
             </div>
           </li>`;
   $('#messages').append(li);
+  scrollToBottom();
+}
+
+//Scroll to bottom of chat
+function scrollToBottom() {
+  var height = 0;
+  $('#messages li').each(function(i, value) {
+    height += parseInt($(this).height());
+  });
+
+  height += '';
+
+  $('#messages').animate({scrollTop: height});
 }
 
 /*
@@ -549,6 +562,7 @@ function appendReceivedMessage(payload) {
             </div>
           </li>`;
   $('#messages').append(li);
+  scrollToBottom();
 }
 
 /*
@@ -568,6 +582,7 @@ function appendReceivedFile(file) {
             </div>
           </li>`;
   $('#messages').append(li);
+  scrollToBottom();
 }
 
 function appendSentFile(file) {
@@ -583,6 +598,7 @@ function appendSentFile(file) {
             </div>
           </li>`;
   $('#messages').append(li);
+  scrollToBottom();
 }
 
 /*
