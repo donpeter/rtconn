@@ -396,37 +396,26 @@ function gotRemoteStream(e) {
 
 function startScreenSharing() {
   screenSharingButton.disabled = true;
-  navigator.mediaDevices.getUserMedia({
-    audio: false,
-    video: {
-      mandatory: {
-        chromeMediaSource: 'screen',
-        maxWidth: 1280,
-        maxHeight: 720,
-      },
-      optional: [],
-    },
-  }).then(gotLocalMediaStream).then(addLocalStream).catch(handleGetUserMediaError);
-  // getScreenMedia(function(err, stream) {
-  //     if (err) {
-  //       console.log('failed: ' + err);
-  //     } else {
-  //       // console.log('got a stream', stream);
-  //       // localStream = stream;
-  //       // localVideo.src = URL.createObjectURL(st
-  //       gotLocalMediaStream(stream);
-  //       stream.oninactive = function() {
-  //         screenSharingButton.disabled = false;
-  //         // get a local stream, show it in our video tag and add it to be sent
-  //         var constraints = getVideoConstrains(videoQuality);
-  //         navigator.mediaDevices.getUserMedia(constraints)
-  //           .then(gotLocalMediaStream).then(addLocalStream).catch(handleGetUserMediaError);
-  //         a;
-  //       };
-  //       addLocalStream();
-  //       socket.emit('screen_sharing', {room: chatRoom, socket: socket.id});
-  //     }
-  //   });
+  getScreenMedia(function(err, stream) {
+    if (err) {
+      console.log('failed: ' + err);
+    } else {
+      // console.log('got a stream', stream);
+      // localStream = stream;
+      // localVideo.src = URL.createObjectURL(st
+      gotLocalMediaStream(stream);
+      stream.oninactive = function() {
+        screenSharingButton.disabled = false;
+        // get a local stream, show it in our video tag and add it to be sent
+        var constraints = getVideoConstrains(videoQuality);
+        navigator.mediaDevices.getUserMedia(constraints)
+          .then(gotLocalMediaStream).then(addLocalStream).catch(handleGetUserMediaError);
+        a;
+      };
+      addLocalStream();
+      socket.emit('screen_sharing', {room: chatRoom, socket: socket.id});
+    }
+  });
 }
 
 function hangup() {
