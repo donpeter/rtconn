@@ -351,10 +351,16 @@ function addLocalStream() {
 function gotLocalMediaStream(mediaStream) {
   window.localStream = mediaStream; // make mediaStream available to console
   // Older browsers may not have srcObject
-  if ('srcObject' in localVideo) {
-    localVideo.srcObject = window.localStream;
-  } else {
-    // Avoid using this in new browsers, as it is going away.
+  // if ('srcObject' in localVideo) {
+  //   localVideo.srcObject = window.localStream;
+  // } else {
+  //   // Avoid using this in new browsers, as it is going away.
+  //   localVideo.src = window.URL.createObjectURL(window.localStream);
+  // }
+
+  try {
+    localVideo.srcObject = mediaStream;
+  } catch (e) {
     localVideo.src = window.URL.createObjectURL(window.localStream);
   }
   localVideo.onloadedmetadata = function(e) {
@@ -386,13 +392,19 @@ function gotLocalMediaStream(mediaStream) {
 function gotRemoteStream(e) {
 
   if (remoteVideo.srcObject !== e.streams[0]) {
-    remoteStream = e.streams[0]; // make mediaStream available to console
+    window.remoteStream = e.streams[0]; // make mediaStream available to console
     // Older browsers may not have srcObject
-    if ('srcObject' in remoteVideo) {
-      remoteVideo.srcObject = e.streams[0];
-    } else {
-      // Avoid using this in new browsers, as it is going away.
-      remoteVideo.src = window.URL.createObjectURL(e.streams[0]);
+    // if ('srcObject' in remoteVideo) {
+    //   remoteVideo.srcObject = e.streams[0];
+    // } else {
+    //   // Avoid using this in new browsers, as it is going away.
+    //   remoteVideo.src = window.URL.createObjectURL(e.streams[0]);
+    // }
+
+    try {
+      remoteVideo.srcObject = window.remoteStream;
+    } catch (e) {
+      remoteVideo.src = window.URL.createObjectURL(window.remoteStream);
     }
     remoteVideo.onloadedmetadata = function(e) {
       remoteVideo.play();

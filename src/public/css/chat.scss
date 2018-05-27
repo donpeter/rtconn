@@ -79,6 +79,10 @@ video {
 .frame{
   background:transparentize(darken($secondary-color, 30), .3) ;
   min-height: 250px;
+
+  @media screen and (min-width: $breakpoint-tablet) {
+    min-height: 99vh;
+  }
   overflow:hidden;
   padding: 5px 0;
   .close{
