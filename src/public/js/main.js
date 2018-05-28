@@ -110,6 +110,7 @@ function startCall() {
 
   sendFile.addEventListener('click', sendFileMeta);
 }
+
 //Hnadle Sinaling mesaage
 function onSignalMessage(payload) {
   trace('Signal received: ' + payload.type);
@@ -177,7 +178,6 @@ function startSignaling() {
   // rtcPeerConn.addStream(localStream);
 
 
-
 }
 
 // Listen for incomming message after DataChannel is Opened
@@ -218,7 +218,6 @@ function receivedDataChannelMessage(event) {
       openTextChat(); //Open the chat box
     }
   }
-
 
 
 }
@@ -330,6 +329,7 @@ function getLocalStream() {
   navigator.mediaDevices.getUserMedia(constraints)
     .then(gotLocalMediaStream).catch(handleGetUserMediaError);
 }
+
 /*
 * Adds the LocalStream track to the rtcPeerConn*/
 function addLocalStream() {
@@ -347,6 +347,7 @@ function addLocalStream() {
     },
   );
 }
+
 // Sets the MediaStream as the video element src.
 function gotLocalMediaStream(mediaStream) {
   window.localStream = mediaStream; // make mediaStream available to console
@@ -485,15 +486,21 @@ function joinRoom(room) {
 }
 
 function chatMessage(payload) {
-  if (dataChannel.readyState !== 'open') {
-    if (payload.socket == socket.id) {
-      appendSentMessage(payload);
-    } else {
-      appendReceivedMessage(payload);
-    }
+  // if (dataChannel.readyState !== 'open') {
+  //   if (payload.socket == socket.id) {
+  //     appendSentMessage(payload);
+  //   } else {
+  //     appendReceivedMessage(payload);
+  //   }
+  // } else {
+  //   trace('Recieved socket chat message, but leaving it for WebRTC DataChannel');
+  // }
+  if (payload.socket == socket.id) {
+    appendSentMessage(payload);
   } else {
-    trace('Recieved socket chat message, but leaving it for WebRTC DataChannel');
+    appendReceivedMessage(payload);
   }
+
 }
 
 function sendMessage(messageInput) {
@@ -507,7 +514,7 @@ function sendMessage(messageInput) {
   };
   messageInput.val('');
   socket.emit('chat-message', payload);
-  dataChannel.send(JSON.stringify(payload));
+  //dataChannel.send(JSON.stringify(payload));
   appendSentMessage(payload);
 
 }
@@ -516,6 +523,7 @@ function sendMessage(messageInput) {
 function logError(err) {
   console.log('Errro: ', err);
 }
+
 function appendSentMessage(payload) {
   payload.message = encodeHTML(payload.message);
   var li = `<li>
