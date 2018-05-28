@@ -561,7 +561,7 @@ function appendReceivedMessage(payload) {
   var li = `<li>
             <div class="msj macro">
               <div class="avatar">
-                <img src="https://lh6.googleusercontent.com/-lr2nyjhhjXw/AAAAAAAAAAI/AAAAAAAARmE/MdtfUmC0M4s/photo.jpg?sz=48">
+                <img src="/static/img/user-150x150.png">
               </div>
               <div class="text text-l">
                 <p>${payload.message} </p>
@@ -570,6 +570,7 @@ function appendReceivedMessage(payload) {
             </div>
           </li>`;
   $('#messages').append(li);
+  openTextChat(); //Open the chat box
   scrollToBottom();
 }
 
