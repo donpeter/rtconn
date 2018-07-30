@@ -33,7 +33,7 @@ CHECK := @bash -c '\
 
 dev:
 	${INFO} "Pulling latest images..."
-#	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) pull
+	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) pull
 	${INFO} "Building images..."
 	@ docker-compose -p $(DEV_PROJECT) -f $(DEV_COMPOSE_FILE) build
 	${INFO} "Starting up NodeJs..."
@@ -54,9 +54,9 @@ release:
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) pull test nginx
 	${INFO} "Building images..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) build
-	${INFO} "Running  Agent..."
-	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up agent
-	${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) agent
+	# ${INFO} "Running  Agent..."
+	# @ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up agent
+	# ${CHECK} $(REL_PROJECT) $(REL_COMPOSE_FILE) agent
 	${INFO} "Running acceptance test..."
 	@ docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) up test
 	@ docker cp $$(docker-compose -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) ps -q test):/reports/. spec/reports

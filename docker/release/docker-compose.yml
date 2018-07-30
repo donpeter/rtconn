@@ -7,16 +7,16 @@ services:
     environment:
       - PORT=3000
       - NODE_ENV=production
-      - MONGO_URL=mongo
-      - MONGO_DB=rtconn-production
-      - REDIS_HOST=redis
+      # - MONGO_URL=mongo
+      # - MONGO_DB=rtconn-production
+      # - REDIS_HOST=redis
     networks:
       - rtconn
     volumes:
       - rtconn:/app
-    depends_on:
-      - mongo
-      - redis
+    # depends_on:
+    #   - mongo
+    #   - redis
   nginx:
     image: patunalu/rtconn-nginx:latest
     networks:
@@ -25,19 +25,19 @@ services:
       - 80:80
     depends_on:
       - app
-  agent:
-    build:
-      context: ansible
-    environment:
-      PROBE_HOST: "mongo"
-      PROBE_PORT: "27017"
-      PROBE_DELAY: 3
-      PORBE_TIMEOUT: 120
-    networks:
-      - rtconn
-    depends_on:
-      - mongo
-      - redis
+  # agent: #Ensures database is running before running the test
+  #   build:
+  #     context: ansible
+  #   environment:
+  #     PROBE_HOST: "mongo"
+  #     PROBE_PORT: "27017"
+  #     PROBE_DELAY: 3
+  #     PORBE_TIMEOUT: 120
+  #   networks:
+  #     - rtconn
+  #   depends_on:
+  #     - mongo
+  #     - redis
 
 
   test:
@@ -51,14 +51,14 @@ services:
     depends_on:
       - nginx
 
-  mongo:
-    image: mongo:latest
-    networks:
-      - rtconn
-  redis:
-    image: redis:latest
-    networks:
-      - rtconn
+  # mongo:
+  #   image: mongo:latest
+  #   networks:
+  #     - rtconn
+  # redis:
+  #   image: redis:latest
+  #   networks:
+  #     - rtconn
 
 volumes:
   rtconn: {}

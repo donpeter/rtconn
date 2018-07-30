@@ -8,7 +8,6 @@ const exphbs = require('express-handlebars');
 // const compress = require('compression');
 const index = require('./routes/index.route');
 
-const users = require('./routes/user.route');
 const chat = require('./routes/chat.route');
 const static = require('./routes/static.route');
 const io = require('./socket.io');
@@ -58,7 +57,6 @@ app.use(bodyParser.urlencoded({
 //   next();
 // });
 app.use('/', index);
-// app.use('/users', users);
 app.use('/chat', chat);
 app.use('/static', static);
 

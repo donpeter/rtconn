@@ -8,16 +8,16 @@ services:
       - JUNIT_REPORT_PATH=/reports/unitandintegration.xml
       - PORT=3000
       - NODE_ENV=test
-      - MONGO_URL=mongo
-      - MONGO_DB=rtconn-test
-      - REDIS_HOST=redis
+      # - MONGO_URL=mongo
+      # - MONGO_DB=rtconn-test
+      # - REDIS_HOST=redis
     expose:
       - 3000
     networks:
       - rtconn
-    depends_on:
-      - mongo
-      - redis
+    # depends_on:
+    #   - mongo
+    #   - redis
 
   node:
     build:
@@ -26,9 +26,9 @@ services:
     environment:
       - PORT=3000
       - NODE_ENV=development
-      - MONGO_URL=mongo
-      - MONGO_DB=rtconn-development
-      - REDIS_HOST=redis
+      # - MONGO_URL=mongo
+      # - MONGO_DB=rtconn-development
+      # - REDIS_HOST=redis
     ports:
       - 3000:3000
       - 35729:35729 #LiveReload
@@ -36,21 +36,21 @@ services:
       - ../../src:/app
     networks:
       - rtconn
-    depends_on:
-      - mongo
-      - redis
+    # depends_on:
+    #   - mongo
+    #   - redis
     command: ["npm", "run", "watch"]
 
-  mongo:
-    image: mongo:latest
-    networks:
-      - rtconn
-  redis:
-    image: redis:latest
-    volumes:
-      - ../../src/data/redis:/data
-    networks:
-      - rtconn
+  # mongo:
+  #   image: mongo:latest
+  #   networks:
+  #     - rtconn
+  # redis:
+  #   image: redis:latest
+  #   volumes:
+  #     - ../../src/data/redis:/data
+  #   networks:
+  #     - rtconn
 
 networks:
   rtconn:
