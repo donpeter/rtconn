@@ -22,3 +22,5 @@ COPY src /app
 #ENTRYPOINT ["build.sh"]
 
 CMD ["npm", "start"]
+EXPOSE 3000
+
